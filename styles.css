@@ -1,0 +1,176 @@
+.path-mod-scormlite .scoframe {
+	position: relative; 
+	width: 100%; 
+	height: 100%;
+}
+.path-mod-scormlite-report #region-main table.flexible tr.average
+{
+	font-weight: bold;
+}
+.path-mod-scormlite-report #region-main table.flexible tr.trainer
+{
+	color: #888;
+}
+
+
+/*------------------------ Tables ----------------------*/
+
+.scormlite-table {
+    margin-bottom: 20px !important;
+}
+.scormlite-table .form-group,
+.scormlite-table .form-group label
+{
+    margin: 0;
+    padding: 0;
+}
+.scormlite-table th.scormlite-cell-status,
+.scormlite-table td.scormlite-cell-status {
+    padding: 0 !important;
+    width: 60px !important;
+    height: 40px !important;
+    vertical-align: middle;
+}
+
+
+/*------------------------ Question statistics ----------------------*/
+
+td.scormlite-cell-statistics-question-title {
+    width: 30%;
+    text-align: right;
+}
+td.scormlite-cell-statistics-question-bar .chart-bar {
+    padding-top: 5px;
+}
+td.scormlite-cell-statistics-question-bar .chart-bar .stack-bar {
+    text-align: center;
+    display: inline-block;
+    border: none;
+    margin: 0;
+    padding: 0;
+    color: #ffffff;
+}
+td.scormlite-cell-statistics-legend-color {
+    width: 15px;
+}
+td.scormlite-cell-statistics-legend-color,
+td.scormlite-cell-statistics-legend-label {
+    border-top: none !important;
+}
+td.scormlite-cell-statistics-legend-color.success,
+td.scormlite-cell-statistics-question-bar .chart-bar .stack-bar.success {
+    background-color: #85C440;
+}
+td.scormlite-cell-statistics-legend-color.danger,
+td.scormlite-cell-statistics-question-bar .chart-bar .stack-bar.danger {
+    background-color: #D53B3B;
+}
+td.scormlite-cell-statistics-legend-color.neutral,
+td.scormlite-cell-statistics-question-bar .chart-bar .stack-bar.neutral {
+    background-color: #FDC200;
+}
+
+
+/*------------------------ Edit form ----------------------*/
+
+#page-mod-scormlite-mod #id_colorszone input {
+    color: #ffffff;
+}
+
+
+/*------------------------ Reports ----------------------*/
+
+.path-mod-scormlite-report #region-main h2.main {
+    color: #333;
+    font-weight: bold;
+    padding: 7px 0 10px 0;
+    margin: 0 !important;
+    text-align: center !important;
+    border: none !important;
+}
+.path-mod-scormlite-report #region-main table.flexible {
+    width: 100%;
+    margin-bottom: 30px;
+}
+.path-mod-scormlite-report #region-main td {
+    vertical-align: middle;
+}
+.path-mod-scormlite-report #region-main th.fullname 
+{
+    text-align: left;
+}
+.path-mod-scormlite-report #region-main tr.average {
+    border: 1px solid #ccc;
+}
+.path-mod-scormlite-report #region-main tr.average td {
+    font-weight: bold;
+    background: #f3f3f3;
+    border: none;
+}
+.path-mod-scormlite-report #region-main td.picture,
+.path-mod-scormlite-report #region-main td.score {
+    width: 45px;
+    text-align: center;
+    font-weight: bold;
+    color: #fff;
+}
+.path-mod-scormlite-report #region-main tr.trainer td {
+    color: #aaa;
+}
+.path-mod-scormlite-report #region-main tr.trainer td.score {
+    color: #fff;
+    font-weight: normal;
+}
+.path-mod-scormlite-report #region-main td.rank {
+    width: 45px;
+    text-align: center;
+}
+.path-mod-scormlite-report #region-main td.score i.icon {
+    color: #ffffff;
+}
+
+
+/*------------------------ View ----------------------*/
+
+#page-mod-scormlite-view #region-main h2.main {
+    color: #333;
+    padding: 0 !important;
+    margin-bottom: 0 !important;
+    text-align: center !important;
+    border: none !important;
+}
+#page-mod-scormlite-view #region-main .myprofile {
+    display: none;
+    margin-bottom: 20px;
+}
+#page-mod-scormlite-view #region-main .myprofile a {
+    display: block;
+}
+#page-mod-scormlite-view #region-main .generalbox.statusbox {
+    border: 1px solid #F0F0F0;
+    background: #F9F9F9;
+    margin: 20px 10px 0 10px;
+    padding: 20px;
+}
+#page-mod-scormlite-view #region-main .generalbox.statusbox.passed,
+#page-mod-scormlite-view #region-main .generalbox.statusbox.completed {
+    border: 2px solid #85C440;
+}
+#page-mod-scormlite-view #region-main .generalbox.statusbox.incomplete {
+    border: 2px solid #FDC200;
+}
+#page-mod-scormlite-view #region-main .generalbox.statusbox.failed {
+    border: 2px solid #D53B3B;
+}
+#page-mod-scormlite-view #region-main .status {
+    margin-bottom: 16px;
+}
+#page-mod-scormlite-view #region-main .status p {
+    color: #999;
+    margin-bottom: 0;
+}
+#page-mod-scormlite-view #region-main .status span.value {
+    color: #333;
+}
+
+

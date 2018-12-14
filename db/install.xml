@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="mod/scorm/db" VERSION="20090420" COMMENT="XMLDB file for Moodle mod/scorm"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
+>
+  <TABLES>
+    <TABLE NAME="scormlite" COMMENT="each table is one SCORM Lite module and its configuration" NEXT="scormlite_scoes">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="course"/>
+        <FIELD NAME="course" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="id" NEXT="name"/>
+        <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" PREVIOUS="course" NEXT="intro"/>
+        <FIELD NAME="intro" TYPE="text" LENGTH="small" NOTNULL="true" SEQUENCE="false" PREVIOUS="name" NEXT="introformat"/>
+        <FIELD NAME="introformat" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="intro" NEXT="code"/>
+        <FIELD NAME="code" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" PREVIOUS="introformat" NEXT="scoid"/>
+        <FIELD NAME="scoid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="code" NEXT="timemodified" COMMENT="Id of the scorm data" />
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="scoid"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="course" UNIQUE="false" FIELDS="course" NEXT="scoid"/>
+        <INDEX NAME="scoid" UNIQUE="false" FIELDS="scoid" PREVIOUS="course"/>
+      </INDEXES>
+    </TABLE>
+
+    <TABLE NAME="scormlite_scoes" COMMENT="SCORM lite instances configuration" PREVIOUS="scormlite" NEXT="scormlite_scoes_track">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="containertype" />
+        <FIELD NAME="containertype" TYPE="char" LENGTH="50" NOTNULL="true" SEQUENCE="false" PREVIOUS="id" NEXT="scormtype" COMMENT="Name of the plugin using this data"/>
+        <FIELD NAME="scormtype" TYPE="char" LENGTH="50" NOTNULL="true" DEFAULT="local" SEQUENCE="false" COMMENT="local, external or repository" PREVIOUS="containertype" NEXT="reference"/>
+        <FIELD NAME="reference" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" PREVIOUS="scormtype" NEXT="sha1hash"/>
+        <FIELD NAME="sha1hash" TYPE="char" LENGTH="40" NOTNULL="false" SEQUENCE="false" COMMENT="package content or ext path hash" PREVIOUS="reference" NEXT="md5hash"/>
+        <FIELD NAME="md5hash" TYPE="char" LENGTH="32" NOTNULL="true" SEQUENCE="false" COMMENT="MD5 Hash of package file" PREVIOUS="sha1hash" NEXT="revision"/>
+        <FIELD NAME="revision" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="revison number" PREVIOUS="md5hash" NEXT="timeopen"/>
+        <FIELD NAME="timeopen" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="revision" NEXT="timeclose"/>
+        <FIELD NAME="timeclose" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="timeopen" NEXT="manualopen"/>
+        <FIELD NAME="manualopen" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="timeclose" NEXT="maxtime"/>
+        <FIELD NAME="maxtime" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="manualopen" NEXT="passingscore"/>
+        <FIELD NAME="passingscore" TYPE="int" LENGTH="2" NOTNULL="true" UNSIGNED="true" DEFAULT="50" SEQUENCE="false" PREVIOUS="maxtime" NEXT="displaychrono"/>
+        <FIELD NAME="displaychrono" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="true" DEFAULT="1" SEQUENCE="false" PREVIOUS="passingscore" NEXT="colors"/>
+        <FIELD NAME="colors" TYPE="text" LENGTH="big" NOTNULL="true" SEQUENCE="false" PREVIOUS="displaychrono" NEXT="popup"/>
+        <FIELD NAME="popup" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="colors" NEXT="maxattempt"/>
+        <FIELD NAME="maxattempt" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="1" SEQUENCE="false" PREVIOUS="popup" NEXT="whatgrade"/>
+        <FIELD NAME="whatgrade" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="maxattempt" NEXT="launchfile"/>
+        <FIELD NAME="launchfile" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" PREVIOUS="whatgrade" NEXT="immediate_review"/>
+        <FIELD NAME="immediate_review" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="launchfile" NEXT="quetzal_statistics"/>
+        <FIELD NAME="quetzal_statistics" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="immediate_review"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+
+    <TABLE NAME="scormlite_scoes_track" COMMENT="to track SCOes" PREVIOUS="scormlite_scoes" NEXT="scormlite_logs">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="userid"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="id" NEXT="scoid"/>
+        <FIELD NAME="scoid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="userid" NEXT="attempt"/>
+        <FIELD NAME="attempt" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="1" SEQUENCE="false" PREVIOUS="scoid" NEXT="element"/>
+        <FIELD NAME="element" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" PREVIOUS="attempt" NEXT="value"/>
+        <FIELD NAME="value" TYPE="text" LENGTH="big" NOTNULL="true" SEQUENCE="false" PREVIOUS="element" NEXT="timemodified"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="value"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="userid-scoid-attempt-element" UNIQUE="true" FIELDS="userid, scoid, attempt, element" NEXT="userid"/>
+        <INDEX NAME="userid" UNIQUE="false" FIELDS="userid" PREVIOUS="userid-scoid-attempt-element" NEXT="scoid"/>
+        <INDEX NAME="scoid" UNIQUE="false" FIELDS="scoid" PREVIOUS="userid" NEXT="element"/>
+        <INDEX NAME="element" UNIQUE="false" FIELDS="element" PREVIOUS="scoid"/>
+      </INDEXES>
+    </TABLE>
+
+    <!-- KD2015 - Version 2.6.3 - Error logs -->
+    <TABLE NAME="scormlite_logs" COMMENT="Errors logs" PREVIOUS="scormlite_scoes_track" NEXT="scormlite_quetzal_questions">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="userid"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="id" NEXT="scoid"/>
+        <FIELD NAME="scoid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="userid" NEXT="attempt"/>
+        <FIELD NAME="attempt" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="1" SEQUENCE="false" PREVIOUS="scoid" NEXT="title"/>
+        <FIELD NAME="title" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" PREVIOUS="attempt" NEXT="data"/>
+        <FIELD NAME="data" TYPE="text" LENGTH="big" NOTNULL="true" SEQUENCE="false" PREVIOUS="title" NEXT="timestamp"/>
+        <FIELD NAME="timestamp" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="data"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="userid" UNIQUE="false" FIELDS="userid" NEXT="scoid"/>
+        <INDEX NAME="scoid" UNIQUE="false" FIELDS="scoid" PREVIOUS="userid"/>
+      </INDEXES>
+    </TABLE>
+
+    <!-- SF2018 - Version 3.x.2 -->
+    <TABLE NAME="scormlite_quetzal_questions" COMMENT="Quetzal Questions" PREVIOUS="scormlite_logs">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="manifestid"/>
+        <FIELD NAME="manifestid" TYPE="char" LENGTH="50" NOTNULL="true" SEQUENCE="false" PREVIOUS="id" NEXT="title"/>
+        <FIELD NAME="title" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" PREVIOUS="manifestid" NEXT="scoid"/>
+        <FIELD NAME="scoid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="title"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
+
+  </TABLES>
+</XMLDB>
+
+
+
+

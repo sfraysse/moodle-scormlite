@@ -1,0 +1,135 @@
+body {
+	margin: 20px;
+	font: 14px arial,helvetica,clean,sans-serif;
+	text-align: center;
+	color: #333;
+}
+
+/* Titles */
+
+.generalbox {
+    margin: 15px 0;
+    background: #f3f3f3;
+    border: none;
+    padding: 15px;
+    margin-bottom: 40px;
+}
+h2.main, .generalbox h2 {
+    font-size: 1.2em;
+    font-weight: bold;
+    padding:  5px 0 5px 0;
+    margin: 0;
+}
+.generalbox h3 {
+    font-size: 1.1em;
+    font-weight: normal;
+    padding:  5px 0 5px 0;
+    margin: 0;
+}
+
+/* Table */
+
+table.flexible {
+	border-spacing: 0;
+    width: 100%;
+    margin-bottom: 30px;
+    border-collapse: collapse;
+}
+table.flexible tr.emptyrow
+{
+	display: none;
+	visibility: hidden;
+}
+.header {
+    font-size : 11px;
+    font-weight : bold;
+    border-top : 1px solid #ccc;
+    padding : 5px;
+    background: #F3F3F3;
+    border-bottom-width: 2px;
+}
+th, td {
+    border: 1px solid #DDD;
+    border-collapse: collapse;
+}
+td {
+	padding: 5px;
+    vertical-align: middle;
+	font-size: 14px;
+}
+tr.r1 td {
+    background-color: #f9f9f9;
+}
+
+th.fullname, th.caption {
+    text-align: left;
+}
+tr.average {
+    border: 1px solid #ccc;
+}
+tr.average td {
+    font-weight: bold;
+    background: #f3f3f3;
+    border: none;
+}
+td.title {
+    font-size: 12px;
+    color: #333;
+}
+td.score, td.avg, td.initial, td.remediation,
+td.beforeremediation, td.afterremediation {
+    width: 45px;
+    text-align: center;
+    font-weight: bold;
+    color: #fff;
+}
+td.rank {
+    width: 45px;
+    text-align: center;
+}
+tr.r1 td.beforeremediation {
+    font-size: 1.5em;
+}
+th.beforeremediation, th.afterremediation {
+    width: 60px;
+}
+.activity {
+    margin-bottom: 30px;
+}
+.activity h4 {
+	text-align: left;
+    font-size: 1.3em;
+	margin: 30px 0 10px 0;
+}
+.activity table.flexible {
+    margin-bottom: 10px;
+}
+
+/* Comments */
+
+.comment {
+	text-align: left;
+}
+.comment pre {
+	padding-left: 20px;
+}
+.comment h5 {
+    color: #999;
+    font-size: 1.3em;
+    margin-bottom: 0;
+}
+.activity .comment h5 {
+    font-size: 1.0em;
+}
+.comment.coursecomment {
+    padding-top: 0;
+}
+.comment textarea {
+    width: 95%;
+    border: solid 1px #ddd;
+    padding: 10px;
+    margin-bottom: 3px;
+    color: #666;
+}
+
+
