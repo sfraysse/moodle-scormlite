@@ -37,8 +37,11 @@ if ($ADMIN->fulltree) {
     // Display mode: current window or popup
     $settings->add(new admin_setting_configselect('scormlite/popup', get_string('display','scormlite'), get_string('displaydesc','scormlite'), 0, scormlite_get_popup_display_array()));
 
+    // Player close button
+    $settings->add(new admin_setting_configcheckbox('scormlite/displayclosebutton', get_string('displayclosebutton', 'scormlite'), get_string('displayclosebuttondesc', 'scormlite'), 1));
+	
     // Chrono
-    $settings->add(new admin_setting_configcheckbox('scormlite/displaychrono', get_string('displaychrono', 'scormlite'), get_string('displaychronodesc','scormlite'), 1));
+    $settings->add(new admin_setting_configcheckbox('scormlite/displaychrono', get_string('displaychrono', 'scormlite'), get_string('displaychronodesc', 'scormlite'), 1));
 	
     // Maximum number of attempts
     $settings->add(new admin_setting_configselect('scormlite/maxattempt', get_string('maximumattempts', 'scormlite'), '', 1, scormlite_get_attempts_array()));

@@ -88,9 +88,12 @@ $backurl = urlencode($backurl);
 				$fullurl = "loadSCO.php?id=".$cm->id.$scoidstr."&userid=".$userid."&attempt=".$attempt."&backurl=".$backurl;
 
 				// SF2018 - Add a close button
-				$unload_url = (new moodle_url('/mod/scormlite/empty.php'))->out();
-				echo "<button onclick=\"document.getElementById('scoframe1').src = '".$unload_url."';\" class='btn btn-primary btn-sm' style='margin-bottom:10px;'>".get_string('manualopenclose', 'scormlite')."</button>\n";
-				
+				$containerConfig = get_config($sco->containertype);
+				if (!isset($containerConfig->displayclosebutton) || $containerConfig->displayclosebutton) {
+					$unload_url = (new moodle_url('/mod/scormlite/empty.php'))->out();
+					echo "<button onclick=\"document.getElementById('scoframe1').src = '" . $unload_url . "';\" class='btn btn-primary btn-sm' style='margin-bottom:10px;'>" . get_string('manualopenclose', 'scormlite') . "</button>\n";
+				}
+
 				echo "<iframe id=\"scoframe1\" class=\"scoframe\" name=\"scoframe1\" src=\"{$fullurl}\"></iframe>\n";
 			} else {
 				// Load the SCO in a popup window
