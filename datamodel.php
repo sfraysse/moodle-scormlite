@@ -34,6 +34,10 @@ $activity = scormlite_get_containeractivity($scoid, $sco->containertype);
 $cm = get_coursemodule_from_instance($sco->containertype, $activity->id, 0, false, MUST_EXIST);
 $course = $DB->get_record("course", array("id"=>$cm->course), '*', MUST_EXIST);
 
+// Include hooks
+$hookFile = $CFG->dirroot . '/mod/' . $sco->containertype . '/hooks.php';
+if (file_exists($hookFile)) require_once($hookFile);
+
 //
 // Page setup
 //
@@ -50,6 +54,7 @@ if (confirm_sesskey() && (!empty($scoid))) {
 	// Never record information for none current user
 	if ($USER->id == $userid) {
 		$result = true;
+		$completed = false;
 		foreach (data_submitted() as $element => $value) {
 			$element = str_replace('__','.',$element);
 			if (!in_array($element, array('id', 'scoid', 'sesskey', 'attempt', 'userid'))) {
@@ -60,6 +65,7 @@ if (confirm_sesskey() && (!empty($scoid))) {
                 if (!$res) scormlite_debug_add_log($userid, $scoid, $attempt, 'Error recording \''.$element.'\' ['.$value.']');  
 				$result = $res && $result;
 			}
+			if ($element == 'cmi.completion_status' && $value == 'completed') $completed = true;
 		}
 	}
 
@@ -67,6 +73,14 @@ if (confirm_sesskey() && (!empty($scoid))) {
 	if ($result) {
 		scormlite_check_completion($userid, $activity, $cm, $course, $sco->containertype);
 		scormlite_check_grades($userid, $activity, $cm, $course, $sco->containertype);
+
+		// Hooks
+
+		// Completion hook
+		if ($completed) {
+			$function = $sco->containertype.'_hook_completion';
+			if (function_exists($function)) $function($cm, $activity, $sco, $userid, $attempt);
+		}
 	}
 
 	// Give a feedback to the client
