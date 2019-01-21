@@ -918,7 +918,7 @@ function scormlite_report_populate_quetzal_stats($tracks, &$questions) {
 			$answer = $answers[$id];
 			if (!isset($answer->s) || !isset($answer->a) || !isset($answer->st) || $answer->st != 'attempt') {
 				$question->stats->noanswer->count++;
-			} else if ($answer->s > 0) {
+			} else if ($answer->s == 1) {
 				$question->stats->correct->count++;
 			} else {
 				$question->stats->incorrect->count++;
