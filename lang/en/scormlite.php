@@ -271,3 +271,12 @@ $string['debugdata'] = 'Debug file';
 $string['scormlite:debugset'] = $string['debugsetscormstatus'];
 $string['scormlite:debugget'] = $string['debuggetscormstatus'];
 
+
+// Privacy metadata
+$string['privacy:metadata:scormlite_scoes_track'] = 'The tracked data of the SCORM Lite activity';
+$string['privacy:metadata:userid'] = 'The ID of the user who accessed the SCORM Lite activity';
+$string['privacy:metadata:attempt'] = 'The attempt number';
+$string['privacy:metadata:scoes_track:element'] = 'The name of the element to be tracked';
+$string['privacy:metadata:scoes_track:value'] = 'The value of the given element';
+$string['privacy:metadata:timemodified'] = 'The time when the tracked element was last modified';
+
