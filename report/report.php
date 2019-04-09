@@ -234,7 +234,6 @@ if (empty($students)) {
 	// Fill
 	echo '<form name="reportform" action="'.$url.'&action=save" method="post">';
 	$table->start_output();
-	$reviewcap = has_capability('mod/scormlite:reviewothercontent', context_module::instance($cm->id));
 	foreach ($students as $userid => $student) {
 		$row = array();	
 		// Check
@@ -252,7 +251,8 @@ if (empty($students)) {
 		$row[] = $strstatus;
 		// Score
 		$review_link = null;
-		$reviewallowed = $reviewcap && scormlite_has_review_access($sco, $student);
+		$reviewallowed = has_capability('mod/scormlite:reviewothercontent', context_module::instance($cm->id));
+		//$reviewallowed = $reviewallowed && scormlite_has_review_access($sco, $student);
 		if ($reviewallowed && isset($student->score)) $review_link = scormlite_report_get_link_review($sco->id, $student->id, $url);
 		$row[] = array('score' => $student->score, 'link' => $review_link, 'colors' => $sco->colors);
 		// Rank
