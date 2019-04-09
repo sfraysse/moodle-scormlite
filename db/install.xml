@@ -44,8 +44,9 @@
         <FIELD NAME="maxattempt" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="1" SEQUENCE="false" PREVIOUS="popup" NEXT="whatgrade"/>
         <FIELD NAME="whatgrade" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="maxattempt" NEXT="launchfile"/>
         <FIELD NAME="launchfile" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" PREVIOUS="whatgrade" NEXT="immediate_review"/>
-        <FIELD NAME="immediate_review" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="launchfile" NEXT="quetzal_statistics"/>
-        <FIELD NAME="quetzal_statistics" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="immediate_review"/>
+        <FIELD NAME="immediate_review" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="launchfile" NEXT="review_access"/>
+        <FIELD NAME="review_access" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="immediate_review" NEXT="quetzal_statistics"/>
+        <FIELD NAME="quetzal_statistics" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="review_access"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>

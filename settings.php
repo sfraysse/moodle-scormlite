@@ -56,8 +56,8 @@ if ($ADMIN->fulltree) {
     // Reports: display rank
     $settings->add(new admin_setting_configcheckbox('scormlite/displayrank', get_string('displayrank', 'scormlite'), get_string('displayrankdesc','scormlite'), 0));
 
-    // Reports: immediate review access
-    $settings->add(new admin_setting_configcheckbox('scormlite/immediate_review', get_string('immediate_review_access', 'scormlite'), get_string('immediate_review_access_help','scormlite'), 0));
+    // Reports: review access
+    $settings->add(new admin_setting_configselect('scormlite/review_access', get_string('review_access', 'scormlite'), get_string('review_access_help', 'scormlite'), 0, scormlite_get_review_access_array()));
 
     // Reports: display Quetzal statistics
     $settings->add(new admin_setting_configcheckbox('scormlite/quetzal_statistics', get_string('quetzal_statistics_access', 'scormlite'), get_string('quetzal_statistics_access_help','scormlite'), 0));

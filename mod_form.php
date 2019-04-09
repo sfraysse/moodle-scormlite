@@ -52,7 +52,7 @@ class mod_scormlite_mod_form extends moodleform_mod {
 		$mform->addHelpButton('code', 'code', 'scormlite');
 
 		// Summary
-        // KD2015-61 – add_intro_editor to be replaced by standard_intro_elements
+        // KD2015-61 ï¿½ add_intro_editor to be replaced by standard_intro_elements
 		// $this->add_intro_editor();
         $this->standard_intro_elements();
 
@@ -126,10 +126,10 @@ class mod_scormlite_mod_form extends moodleform_mod {
         $mform->addHelpButton('whatgrade', 'whatgrade', 'scormlite');
         $mform->setDefault('whatgrade', $config->whatgrade);
 
-		// Reports: immediate review access
-		$mform->addElement('advcheckbox', 'immediate_review', get_string('immediate_review_access', 'scormlite'));
-		$mform->setDefault('immediate_review', $config->immediate_review);
-        $mform->addHelpButton('immediate_review', 'immediate_review_access', 'scormlite');
+		// Reports: review access
+		$mform->addElement('select', 'review_access', get_string('review_access', 'scormlite'), scormlite_get_review_access_array());
+		$mform->addHelpButton('review_access', 'review_access', 'scormlite');
+		$mform->setDefault('review_access', $config->review_access);
 
 		// Reports: Quetzal statistics
 		$mform->addElement('advcheckbox', 'quetzal_statistics', get_string('quetzal_statistics_access', 'scormlite'));
@@ -211,6 +211,11 @@ class mod_scormlite_mod_form extends moodleform_mod {
 			$default_values['timeclose'] = 0;
 		}
 
+		// Immediate review access > Review access
+		if ($default_values['immediate_review']) {
+			$default_values['review_access'] = 1;
+		}
+
 		parent::data_preprocessing($default_values);
 	}
 
@@ -233,6 +238,9 @@ class mod_scormlite_mod_form extends moodleform_mod {
 		if ($data['passingscore'] < 1 || $data['passingscore'] > 100) {
 			$errors['passingscore'] = get_string('notvalidpassingscore', 'scormlite');
 		}
+
+		// Immediate review
+		$data['immediate_review'] = 0;
 
 		// Colors
 		scormlite_form_check_colors($data, $errors);

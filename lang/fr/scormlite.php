@@ -230,11 +230,14 @@ $string['quetzal_question_'] = 'Question {$a}';
 $string['quetzal_correct_answer'] = 'Réponses correctes';
 $string['quetzal_wrong_answer'] = 'Réponses incorrectes';
 $string['quetzal_no_answer'] = 'Pas de réponse';
-// Immediate review access
-$string['immediate_review_access'] = 'Accès immédiat à la correction';
-$string['immediate_review_access_help'] = "
+// Review access
+$string['review_access'] = 'Accès à la correction';
+$string['review_access_help'] = "
     Par défaut, l'activité doit être clôturée pour que les apprenants puissent accéder à la correction.
-    Cette option permet de libérer l'accès immédiatement après avoir effectué le Quiz.";
+    Cette option offre différentes alternatives.";
+$string['whenclosed'] = 'Après fermeture';
+$string['immediate'] = 'Immédiat';
+$string['onsuccess'] = 'Après réussite ou dernier essai';
 
 // KD2015 - Version 2.6.3 - Timeout and debug functions
 
