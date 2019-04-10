@@ -212,7 +212,7 @@ class mod_scormlite_mod_form extends moodleform_mod {
 		}
 
 		// Immediate review access > Review access
-		if ($default_values['immediate_review']) {
+		if (isset($default_values['immediate_review']) && $default_values['immediate_review']) {
 			$default_values['review_access'] = 1;
 		}
 
