@@ -19,7 +19,7 @@
 
 En dehors des réglages par défaut pour les activités nouvellement créées, on trouve :
 
-- **Display close button** - Afficher d'un bouton de sortie de l'activité au dessus du Player SCORM lorsque l'affichage est non fenêtré.
+- **Display close button** - Afficher un bouton de sortie de l'activité au dessus du Player SCORM lorsque l'affichage est non fenêtré.
 
 - **Display rank** - Afficher une colonne de classement des apprenants dans la page de suivi.
 
@@ -81,21 +81,21 @@ En dehors des réglages communs à toutes les activités Moodle, on trouve :
 - **Reporting colors** - Couleurs à appliquer dans la page de suivi.
 
 
-## Consultation du contenu SCORM Lite
+## Consultation de l'activité
 
 Lorsque l’utilisateur lance l'activité, plusieurs cas sont possibles :
 
-- Si l’activité est indisponible, un message approprié est affiché et le contenu ne peut être lancé.
+- **Si l’activité est indisponible**, un message approprié est affiché et le contenu ne peut être lancé.
 
-- Si l’activité est ouverte et n’a jamais été lancée, la page affiche le nombre de tentatives autorisées, le nombre de tentatives terminées, ainsi qu’un bouton `Start`.
+- **Si l’activité est accessible et n’a jamais été lancée**, la page affiche le nombre de tentatives autorisées, le nombre de tentatives terminées, ainsi qu’un bouton `Start`.
 
-- Si le contenu a déjà été consulté, la page affiche le nombre de tentatives autorisées, le nombre de tentatives terminées, l’état de complétion, le temps passé, éventuellement un score, les dates et heures de début et de fin.
+- **Si le contenu a déjà été consulté**, la page affiche le nombre de tentatives autorisées, le nombre de tentatives terminées, l’état de complétion, le temps passé, éventuellement un score, les dates et heures de début et de fin.
 
-- Si la consultation du contenu n’est pas terminée (complétion), alors un bouton `Resume` est affiché.
+- **Si la consultation du contenu n’est pas terminée (complétion)**, alors un bouton `Resume` est affiché.
 
-- Si la consultation du contenu est terminée et que de nouvelles tentatives sont autorisées, alors un bouton `New Attempt` est affiché.
+- **Si la consultation du contenu est terminée et que de nouvelles tentatives sont autorisées**, alors un bouton `New Attempt` est affiché.
 
-- Si la consultation du contenu est terminée et que l'accès à la copie corrigée est autorisé, alors un bouton `Review` est affiché.
+- **Si la consultation du contenu est terminée et que l'accès à la copie corrigée est autorisé**, alors un bouton `Review` est affiché.
 
 
 ## Rapport de suivi
