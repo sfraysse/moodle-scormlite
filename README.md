@@ -1,4 +1,4 @@
-> **ScormLite 3.4.x** est un plugin pour Moodle 3.4 permettant le déploiement, la consultation et le suivi de contenus SCORM simplifiés, conformes aux principes de SCORM Lite (cf http://scormlite.com).
+> **ScormLite 3.4.5** est un plugin pour Moodle 3.4 permettant le déploiement, la consultation et le suivi de contenus SCORM simplifiés, conformes aux principes de SCORM Lite (cf http://scormlite.com).
 
 # Installation
 
@@ -10,7 +10,7 @@
 
 ## Procédure d'installation
 
-- Télécharger la dernière version du plugin : https://github.com/sfraysse/moodle-scormlite/archive/v3.4.4.zip.
+- Télécharger la dernière version du plugin : https://github.com/sfraysse/moodle-scormlite/archive/v3.4.5.zip.
 - Dans `Moodle > Administration > Plugins > Install plugins`, importer le fichier ZIP du plugin.
 - Suivre la procédure d'installation.
 
