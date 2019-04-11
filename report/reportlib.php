@@ -525,6 +525,7 @@ function scormlite_get_myactions($cm, $sco, $trackdata, $scormopen = true, $back
 			
 			// Review mode
 			if ($reviewMode && has_capability('mod/scormlite:reviewmycontent', context_module::instance($cm->id))) {
+
 				// Can be reviewed
 				$action = 'review';
 				$attempt = scormlite_get_relevant_attempt($sco->id, $userid);
@@ -535,10 +536,13 @@ function scormlite_get_myactions($cm, $sco, $trackdata, $scormopen = true, $back
             // Start a new attempt
             $attemptmax = $sco->maxattempt;
             if ($attemptmax == 0 || ($attemptnumber < $attemptmax)) {
-                // Can start new attempt
-                $action = 'newattempt';
-                $playerurl .= '&attempt='.($attemptnumber+1);
-				$html .= '<a href="'.$playerurl.'" class="btn btn-primary" role="button">'.get_string("newattempt", "scormlite").'</a>';
+
+				// Can start new attempt
+				if (!$sco->lock_attempts_after_success || $trackdata->status != 'passed') {
+					$action = 'newattempt';
+					$playerurl .= '&attempt=' . ($attemptnumber + 1);
+					$html .= '<a href="' . $playerurl . '" class="btn btn-primary" role="button">' . get_string("newattempt", "scormlite") . '</a>';
+				}
             }
 		}
 	} else if ($trackdata->status == 'notattempted' && $scormopen) {

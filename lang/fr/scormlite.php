@@ -94,6 +94,9 @@ $string['attemptsx'] = '{$a} tentatives';
 $string['highestattempt'] = 'Meilleur score';
 $string['firstattempt'] = 'Premier score';
 $string['lastattempt'] = 'Dernier score';
+$string['lock_attempts_after_success'] = 'Interdire les nouveaux essais après une réussite';
+$string['lock_attempts_after_success_help'] = 'Les nouveaux essais sont interdits dès lors que l\'apprenant a réussi l\'activité.';
+
 // Colors
 $string['scorelessthan'] = 'Score <';
 $string['scoreupto'] = 'Score <=';

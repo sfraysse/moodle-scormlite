@@ -94,6 +94,8 @@ $string['attemptsx'] = '{$a} attempts';
 $string['highestattempt'] = 'Highest score';
 $string['firstattempt'] = 'First score';
 $string['lastattempt'] = 'Last score';
+$string['lock_attempts_after_success'] = 'Prevent new attempts after success';
+$string['lock_attempts_after_success_help'] = 'New attempts will be forbidden as soon as the student will pass the activity.';
 // Colors
 $string['scorelessthan'] = 'Score <';
 $string['scoreupto'] = 'Score <=';

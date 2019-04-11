@@ -126,6 +126,11 @@ class mod_scormlite_mod_form extends moodleform_mod {
         $mform->addHelpButton('whatgrade', 'whatgrade', 'scormlite');
         $mform->setDefault('whatgrade', $config->whatgrade);
 
+		// Lock attempts after success
+		$mform->addElement('selectyesno', 'lock_attempts_after_success', get_string('lock_attempts_after_success', 'scormlite'));
+		$mform->setDefault('lock_attempts_after_success', $config->lock_attempts_after_success);
+		$mform->addHelpButton('lock_attempts_after_success', 'lock_attempts_after_success', 'scormlite');
+
 		// Reports: review access
 		$mform->addElement('select', 'review_access', get_string('review_access', 'scormlite'), scormlite_get_review_access_array());
 		$mform->addHelpButton('review_access', 'review_access', 'scormlite');
