@@ -136,6 +136,7 @@ function xmldb_scormlite_upgrade($oldversion) {
     }
     
     /* Adding column 'review_access' to scormlite_scoes table */
+    /* Adding column 'lock_attempts_after_success' to scormlite_scoes table */
 
     if ($oldversion < 2017110805) {
 
@@ -146,21 +147,12 @@ function xmldb_scormlite_upgrade($oldversion) {
             $dbman->add_field($table, $field);
         }
 
-        upgrade_mod_savepoint(true, 2017110805, 'scormlite');
-    }
-    
-    /* Adding column 'lock_attempts_after_success' to scormlite_scoes table */
-
-    if ($oldversion < 2017110806) {
-
-        $table = new xmldb_table('scormlite_scoes');
-
         $field = new xmldb_field('lock_attempts_after_success', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0');
         if (!$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);
         }
 
-        upgrade_mod_savepoint(true, 2017110806, 'scormlite');
+        upgrade_mod_savepoint(true, 2017110805, 'scormlite');
     }
     
 	return true;
