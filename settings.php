@@ -49,7 +49,7 @@ if ($ADMIN->fulltree) {
     // Score to keep when multiple attempts
     $settings->add(new admin_setting_configselect('scormlite/whatgrade', get_string('whatgrade', 'scormlite'), get_string('whatgradedesc', 'scormlite'), 0, scormlite_get_what_grade_array()));
 
-    // Allows new attempts after success
+    // Lock new attempts after success
     $settings->add(new admin_setting_configcheckbox('scormlite/lock_attempts_after_success', get_string('lock_attempts_after_success', 'scormlite'), get_string('lock_attempts_after_success_help', 'scormlite'), 0));
 
     // Colors

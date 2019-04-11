@@ -128,6 +128,7 @@ class mod_scormlite_mod_form extends moodleform_mod {
 
 		// Lock attempts after success
 		$mform->addElement('selectyesno', 'lock_attempts_after_success', get_string('lock_attempts_after_success', 'scormlite'));
+		$mform->disabledIf('whatgrade', 'maxattempt', 'eq', 1);
 		$mform->setDefault('lock_attempts_after_success', $config->lock_attempts_after_success);
 		$mform->addHelpButton('lock_attempts_after_success', 'lock_attempts_after_success', 'scormlite');
 
