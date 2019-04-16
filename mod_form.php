@@ -177,9 +177,12 @@ class mod_scormlite_mod_form extends moodleform_mod {
 
 		$mform->addElement('hidden', 'sha1hash', '');
         $mform->setType('sha1hash', PARAM_RAW);  // KD2014 - For 2.5 compliance
-        
+
 		$mform->addElement('hidden', 'revision', 0);
-        $mform->setType('revision', PARAM_INT);  // KD2014 - For 2.5 compliance
+		$mform->setType('revision', PARAM_INT);  // KD2014 - For 2.5 compliance
+
+		$mform->addElement('hidden', 'immediate_review', 0);
+		$mform->setType('immediate_review', PARAM_INT);
 	}
 
 	//
@@ -220,6 +223,7 @@ class mod_scormlite_mod_form extends moodleform_mod {
 		// Immediate review access > Review access
 		if (isset($default_values['immediate_review']) && $default_values['immediate_review']) {
 			$default_values['review_access'] = 1;
+			$default_values['immediate_review'] = 0;
 		}
 
 		parent::data_preprocessing($default_values);
@@ -244,9 +248,6 @@ class mod_scormlite_mod_form extends moodleform_mod {
 		if ($data['passingscore'] < 1 || $data['passingscore'] > 100) {
 			$errors['passingscore'] = get_string('notvalidpassingscore', 'scormlite');
 		}
-
-		// Immediate review
-		$data['immediate_review'] = 0;
 
 		// Colors
 		scormlite_form_check_colors($data, $errors);
