@@ -20,7 +20,7 @@ Ce plugin existe aussi pour les versions suivantes de Moodle :
 
 ## Procédure d'installation
 
-- Télécharger la dernière version du plugin : https://github.com/sfraysse/moodle-scormlite/archive/v3.4.5.zip.
+- Télécharger la dernière version du plugin : https://github.com/sfraysse/moodle-scormlite/archive/v3.4.6.zip.
 - Dans `Moodle > Administration > Plugins > Install plugins`, importer le fichier ZIP du plugin.
 - Suivre la procédure d'installation.
 

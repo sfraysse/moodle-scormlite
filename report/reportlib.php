@@ -1107,8 +1107,11 @@ class scormlite_table_lms_export_format extends table_default_export_format_pare
 					$color = $this->get_score_color($data['colors'], $data['score']);
 					$style = ';background-color:'.$color;
 				}
+				if (array_key_exists('attempt', $data) && !empty($data['attempt'])) {
+					$cell .= '<p class="attempt" style="margin:0;"><small>' . $data['attempt'] . '</small></p>';
+				}
 				if (array_key_exists('link', $data) && !empty($data['link'])) {
-					$cell .= '<br/>'.$data['link'];
+					$cell .= '<p class="link" style="margin:0;">' . $data['link'] . '</p>';
 				}
 			} else {
 				$cell = $data;
