@@ -94,6 +94,8 @@ $string['attemptsx'] = '{$a} attempts';
 $string['highestattempt'] = 'Highest score';
 $string['firstattempt'] = 'First score';
 $string['lastattempt'] = 'Last score';
+$string['lock_attempts_after_success'] = 'Prevent new attempts after success';
+$string['lock_attempts_after_success_help'] = 'New attempts will be forbidden as soon as the student will pass the activity.';
 // Colors
 $string['scorelessthan'] = 'Score <';
 $string['scoreupto'] = 'Score <=';
@@ -230,11 +232,14 @@ $string['quetzal_question_'] = 'Question {$a}';
 $string['quetzal_correct_answer'] = 'Correct answers';
 $string['quetzal_wrong_answer'] = 'Wrong answers';
 $string['quetzal_no_answer'] = 'No answer';
-// Immediate review access
-$string['immediate_review_access'] = 'Immediate review access';
-$string['immediate_review_access_help'] = "
+// Review access
+$string['review_access'] = 'Review access';
+$string['review_access_help'] = "
     By defaut, tutors must close the activity to let learners access the review mode.
-    This option gives an immediate access to the review mode.";
+    This setting gives alternative options to enable the review mode.";
+$string['whenclosed'] = 'When closed';
+$string['immediate'] = 'Immediate';
+$string['onsuccess'] = 'On success / After last attempt';
 
 // KD2015 - Version 2.6.3 - Timeout and debug functions
 

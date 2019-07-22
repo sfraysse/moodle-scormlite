@@ -49,6 +49,9 @@ if ($ADMIN->fulltree) {
     // Score to keep when multiple attempts
     $settings->add(new admin_setting_configselect('scormlite/whatgrade', get_string('whatgrade', 'scormlite'), get_string('whatgradedesc', 'scormlite'), 0, scormlite_get_what_grade_array()));
 
+    // Lock new attempts after success
+    $settings->add(new admin_setting_configcheckbox('scormlite/lock_attempts_after_success', get_string('lock_attempts_after_success', 'scormlite'), get_string('lock_attempts_after_success_help', 'scormlite'), 0));
+
     // Colors
     $jsoncolors = '{"lt":50, "color":"#D53B3B"}, {"lt":65, "color":"#EF7A00"}, {"lt":75, "color":"#FDC200"}, {"lt":101,"color":"#85C440"}';
     $settings->add(new admin_setting_configtext('scormlite/colors', get_string('colors', 'scormlite'), get_string('colorsdesc','scormlite'), $jsoncolors, PARAM_RAW, 100));
@@ -56,8 +59,8 @@ if ($ADMIN->fulltree) {
     // Reports: display rank
     $settings->add(new admin_setting_configcheckbox('scormlite/displayrank', get_string('displayrank', 'scormlite'), get_string('displayrankdesc','scormlite'), 0));
 
-    // Reports: immediate review access
-    $settings->add(new admin_setting_configcheckbox('scormlite/immediate_review', get_string('immediate_review_access', 'scormlite'), get_string('immediate_review_access_help','scormlite'), 0));
+    // Reports: review access
+    $settings->add(new admin_setting_configselect('scormlite/review_access', get_string('review_access', 'scormlite'), get_string('review_access_help', 'scormlite'), 0, scormlite_get_review_access_array()));
 
     // Reports: display Quetzal statistics
     $settings->add(new admin_setting_configcheckbox('scormlite/quetzal_statistics', get_string('quetzal_statistics_access', 'scormlite'), get_string('quetzal_statistics_access_help','scormlite'), 0));

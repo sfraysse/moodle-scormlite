@@ -129,6 +129,21 @@ td.scormlite-cell-statistics-question-bar .chart-bar .stack-bar.neutral {
     color: #ffffff;
 }
 
+#page-mod-assessmentpath-report-P4 td.cell.initial,
+#page-mod-assessmentpath-report-P4 td.cell.remediation
+{
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+#page-mod-assessmentpath-report-P4 td.cell .attempt
+{
+    margin-top:-8px !important;
+}
+#page-mod-assessmentpath-report-P4 td.cell .link
+{
+    margin-top:-5px !important;
+}
+
 
 /*------------------------ View ----------------------*/
 

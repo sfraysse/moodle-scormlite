@@ -83,6 +83,10 @@ td.beforeremediation, td.afterremediation {
     font-weight: bold;
     color: #fff;
 }
+td.cell .attempt {
+    margin:0 !important;
+}
+
 td.rank {
     width: 45px;
     text-align: center;

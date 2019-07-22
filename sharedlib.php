@@ -208,6 +208,17 @@ function scormlite_get_what_grade_array() {
 	return $options;
 }
 
+// Review access options
+
+function scormlite_get_review_access_array()
+{
+	$options = array();
+	$options[0] = get_string('whenclosed', 'scormlite');
+	$options[1] = get_string('immediate', 'scormlite');
+	$options[2] = get_string('onsuccess', 'scormlite');
+	return $options;
+}
+
 
 // 
 // Form functions
