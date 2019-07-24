@@ -151,15 +151,18 @@ function scormlite_shared_get_file_info($browser, $areas, $course, $cm, $context
 }
 
 function scormlite_shared_reset_userdata($data, &$status, $modulename='scormlite') {
-    $sql = '
+	global $DB;
+
+	// SCORM Lite Tracks
+	$sql = '
         DELETE SST
         FROM {scormlite_scoes_track} SST
         INNER JOIN {'.$modulename.'} S ON S.scoid=SST.scoid
         INNER JOIN {course_modules} CM ON CM.instance=S.id
         WHERE CM.course=?';
-    global $DB;
     $DB->execute($sql, array($data->courseid));
-    // Status
+
+	// Status
     $status[] = array(
         'component' => get_string('modulenameplural', $modulename),
         'item' => get_string('deletealltracks', 'scormlite'),

@@ -22,7 +22,6 @@ use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\approved_userlist;
 use core_privacy\local\request\contextlist;
-use core_privacy\local\request\helper;
 use core_privacy\local\request\transform;
 use core_privacy\local\request\userlist;
 use core_privacy\local\request\writer;
@@ -149,8 +148,11 @@ class provider implements
                   FROM {scormlite_scoes_track} sst
                   JOIN {scormlite} s
                     ON s.scoid = sst.scoid
+                  JOIN {modules} m
+                    ON m.name = 'scormlite'
                   JOIN {course_modules} cm
                     ON cm.instance = s.id
+                   AND cm.module = m.id
                   JOIN {context} ctx
                     ON ctx.instanceid = cm.id
                  WHERE ctx.id $insql
