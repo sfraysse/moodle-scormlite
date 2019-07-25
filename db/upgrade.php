@@ -138,7 +138,7 @@ function xmldb_scormlite_upgrade($oldversion) {
     /* Adding column 'review_access' to scormlite_scoes table */
     /* Adding column 'lock_attempts_after_success' to scormlite_scoes table */
 
-    if ($oldversion < 2017110805 || $oldversion == 2018050800) {
+    if ($oldversion < 2017110805 || $oldversion == 2018050800 || $oldversion == 2018112800) {
 
         $table = new xmldb_table('scormlite_scoes');
 
