@@ -7,7 +7,7 @@ Vous êtes sur la page de la **version 3.5.1** du plugin ScormLite, dernière ve
 
 Ce plugin existe aussi pour :
 - **Moodle 3.4** : [ScormLite 3.4](https://github.com/sfraysse/moodle-scormlite/tree/3.4)
-- **Moodle 3.6** : [ScormLite 3.6](https://github.com/sfraysse/moodle-scormlite)
+- **Moodle 3.6** : [ScormLite 3.6](https://github.com/sfraysse/moodle-scormlite/tree/3.6)
 
 
 # Installation
