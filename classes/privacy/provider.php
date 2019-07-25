@@ -88,7 +88,8 @@ class provider implements
      *
      * @param   userlist    $userlist   The userlist containing the list of users who have data in this context/plugin combination.
      */
-    public static function get_users_in_context(userlist $userlist) {
+    public static function get_users_in_context(userlist $userlist) 
+    {
         $context = $userlist->get_context();
 
         if (!is_a($context, \context_module::class)) {
@@ -135,18 +136,10 @@ class provider implements
             return;
         }
 
-        $user = $contextlist->get_user();
-        $userid = $user->id;
-        // Get SCORM data.
-        foreach ($contexts as $contextid) {
-            $context = \context::instance_by_id($contextid);
-            $data = helper::get_context_data($context, $user);
-            writer::with_context($context)->export_data([], $data);
-            helper::export_context_files($context, $user);
-        }
+        $userid = $contextlist->get_user()->id;
+        list($insql, $inparams) = $DB->get_in_or_equal($contexts, SQL_PARAMS_NAMED);
 
         // Get scoes_track data.
-        list($insql, $inparams) = $DB->get_in_or_equal($contexts, SQL_PARAMS_NAMED);
         $sql = "SELECT sst.id,
                        sst.attempt,
                        sst.element,
