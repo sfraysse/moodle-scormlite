@@ -30,13 +30,23 @@ function scormlite_get_activity_from_scoid($scoid) {
 // Returns the activity completion
 
 function scormlite_is_activity_completed($userid, $activity) {
-	global $CFG;
+	global $CFG, $DB;
 	require_once($CFG->dirroot.'/mod/scormlite/report/reportlib.php');
 	$tracks = scormlite_get_tracks($activity->scoid, $userid);
-	if ($tracks->success_status == "passed" || $tracks->success_status == "failed" || $tracks->completion_status == "completed") {
-		return true;
+	if (empty($tracks)) return false;
+	$sco = $DB->get_record("scormlite_scoes", array("id" => $activity->scoid), '*', MUST_EXIST);
+	if ($sco->review_access < 2) {
+
+		// Default completion tracking
+		return $tracks->success_status == "passed" 
+			|| $tracks->success_status == "failed" 
+			|| $tracks->completion_status == "completed";
+	} else {
+
+		// Special rule
+		return $tracks->success_status == "passed" 
+			|| $tracks->attemptnb == $sco->maxattempt;
 	}
-	return false;
 }
 
 // Returns the user grade for this activity or NULL if there is no grade to record

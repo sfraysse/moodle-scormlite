@@ -151,15 +151,18 @@ function scormlite_shared_get_file_info($browser, $areas, $course, $cm, $context
 }
 
 function scormlite_shared_reset_userdata($data, &$status, $modulename='scormlite') {
-    $sql = '
+	global $DB;
+
+	// SCORM Lite Tracks
+	$sql = '
         DELETE SST
         FROM {scormlite_scoes_track} SST
         INNER JOIN {'.$modulename.'} S ON S.scoid=SST.scoid
         INNER JOIN {course_modules} CM ON CM.instance=S.id
         WHERE CM.course=?';
-    global $DB;
     $DB->execute($sql, array($data->courseid));
-    // Status
+
+	// Status
     $status[] = array(
         'component' => get_string('modulenameplural', $modulename),
         'item' => get_string('deletealltracks', 'scormlite'),
@@ -205,6 +208,17 @@ function scormlite_get_what_grade_array() {
 	$options[0] = get_string('highestattempt', 'scormlite');
 	$options[1] = get_string('firstattempt', 'scormlite');
 	$options[2] = get_string('lastattempt', 'scormlite');
+	return $options;
+}
+
+// Review access options
+
+function scormlite_get_review_access_array()
+{
+	$options = array();
+	$options[0] = get_string('whenclosed', 'scormlite');
+	$options[1] = get_string('immediate', 'scormlite');
+	$options[2] = get_string('onsuccess', 'scormlite');
 	return $options;
 }
 

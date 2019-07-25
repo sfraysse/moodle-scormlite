@@ -52,7 +52,7 @@ class mod_scormlite_mod_form extends moodleform_mod {
 		$mform->addHelpButton('code', 'code', 'scormlite');
 
 		// Summary
-        // KD2015-61 – add_intro_editor to be replaced by standard_intro_elements
+        // KD2015-61 ï¿½ add_intro_editor to be replaced by standard_intro_elements
 		// $this->add_intro_editor();
         $this->standard_intro_elements();
 
@@ -126,10 +126,16 @@ class mod_scormlite_mod_form extends moodleform_mod {
         $mform->addHelpButton('whatgrade', 'whatgrade', 'scormlite');
         $mform->setDefault('whatgrade', $config->whatgrade);
 
-		// Reports: immediate review access
-		$mform->addElement('advcheckbox', 'immediate_review', get_string('immediate_review_access', 'scormlite'));
-		$mform->setDefault('immediate_review', $config->immediate_review);
-        $mform->addHelpButton('immediate_review', 'immediate_review_access', 'scormlite');
+		// Lock attempts after success
+		$mform->addElement('selectyesno', 'lock_attempts_after_success', get_string('lock_attempts_after_success', 'scormlite'));
+		$mform->disabledIf('whatgrade', 'maxattempt', 'eq', 1);
+		$mform->setDefault('lock_attempts_after_success', $config->lock_attempts_after_success);
+		$mform->addHelpButton('lock_attempts_after_success', 'lock_attempts_after_success', 'scormlite');
+
+		// Reports: review access
+		$mform->addElement('select', 'review_access', get_string('review_access', 'scormlite'), scormlite_get_review_access_array());
+		$mform->addHelpButton('review_access', 'review_access', 'scormlite');
+		$mform->setDefault('review_access', $config->review_access);
 
 		// Reports: Quetzal statistics
 		$mform->addElement('advcheckbox', 'quetzal_statistics', get_string('quetzal_statistics_access', 'scormlite'));
@@ -171,9 +177,12 @@ class mod_scormlite_mod_form extends moodleform_mod {
 
 		$mform->addElement('hidden', 'sha1hash', '');
         $mform->setType('sha1hash', PARAM_RAW);  // KD2014 - For 2.5 compliance
-        
+
 		$mform->addElement('hidden', 'revision', 0);
-        $mform->setType('revision', PARAM_INT);  // KD2014 - For 2.5 compliance
+		$mform->setType('revision', PARAM_INT);  // KD2014 - For 2.5 compliance
+
+		$mform->addElement('hidden', 'immediate_review', 0);
+		$mform->setType('immediate_review', PARAM_INT);
 	}
 
 	//
@@ -209,6 +218,12 @@ class mod_scormlite_mod_form extends moodleform_mod {
 		}
 		if (empty($default_values['timeclose'])) {
 			$default_values['timeclose'] = 0;
+		}
+
+		// Immediate review access > Review access
+		if (isset($default_values['immediate_review']) && $default_values['immediate_review']) {
+			$default_values['review_access'] = 1;
+			$default_values['immediate_review'] = 0;
 		}
 
 		parent::data_preprocessing($default_values);

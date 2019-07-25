@@ -22,7 +22,6 @@ use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\approved_userlist;
 use core_privacy\local\request\contextlist;
-use core_privacy\local\request\helper;
 use core_privacy\local\request\transform;
 use core_privacy\local\request\userlist;
 use core_privacy\local\request\writer;
@@ -65,10 +64,8 @@ class provider implements
     {
         $sql = "SELECT ctx.id
                   FROM {%s} sst
-                  JOIN {scormlite_scoes} ss
-                    ON ss.id = sst.scoid
                   JOIN {scormlite} s
-                    ON s.scoid = ss.id
+                    ON s.scoid = sst.scoid
                   JOIN {modules} m
                     ON m.name = 'scormlite'
                   JOIN {course_modules} cm
@@ -91,20 +88,17 @@ class provider implements
      *
      * @param   userlist    $userlist   The userlist containing the list of users who have data in this context/plugin combination.
      */
-    public static function get_users_in_context(userlist $userlist)
-    {
+    public static function get_users_in_context(userlist $userlist) {
         $context = $userlist->get_context();
 
         if (!is_a($context, \context_module::class)) {
             return;
         }
 
-        $sql = "SELECT ss.userid
+        $sql = "SELECT sst.userid
                   FROM {%s} sst
-                  JOIN {scormlite_scoes} ss
-                    ON ss.id = sst.scoid
                   JOIN {scormlite} s
-                    ON s.scoid = ss.id
+                    ON s.scoid = sst.scoid
                   JOIN {modules} m
                     ON m.name = 'scormlite'
                   JOIN {course_modules} cm
@@ -160,12 +154,13 @@ class provider implements
                        sst.timemodified,
                        ctx.id as contextid
                   FROM {scormlite_scoes_track} sst
-                  JOIN {scormlite_scoes} ss
-                    ON ss.id = sst.scoid
                   JOIN {scormlite} s
-                    ON s.scoid = ss.id
+                    ON s.scoid = sst.scoid
+                  JOIN {modules} m
+                    ON m.name = 'scormlite'
                   JOIN {course_modules} cm
                     ON cm.instance = s.id
+                   AND cm.module = m.id
                   JOIN {context} ctx
                     ON ctx.instanceid = cm.id
                  WHERE ctx.id $insql
@@ -183,18 +178,16 @@ class provider implements
         }
         $scoestracks->close();
 
-        // The scoes_track data is organised in: {Course name}/{SCORM activity name}/{My attempts}/{Attempt X}/data.json
-        // where X is the attempt number.
         array_walk($alldata, function ($attemptsdata, $contextid) {
             $context = \context::instance_by_id($contextid);
             array_walk($attemptsdata, function ($data, $attempt) use ($context) {
                 $subcontext = [
-                    get_string('myattempts', 'scorm'),
-                    get_string('attempt', 'scorm') . " $attempt"
+                  get_string('myattempts', 'scorm'),
+                  get_string('attempt', 'scorm') . " $attempt"
                 ];
                 writer::with_context($context)->export_data(
-                    $subcontext,
-                    (object)['scoestrack' => $data]
+                  $subcontext,
+                  (object) ['scoestrack' => $data]
                 );
             });
         });
@@ -216,10 +209,8 @@ class provider implements
         // Prepare SQL to gather all IDs to delete.
         $sql = "SELECT sst.id
                   FROM {%s} sst
-                  JOIN {scormlite_scoes} ss
-                    ON ss.id = sst.scoid
                   JOIN {scormlite} s
-                    ON s.scoid = ss.id
+                    ON s.scoid = sst.scoid
                   JOIN {modules} m
                     ON m.name = 'scormlite'
                   JOIN {course_modules} cm
@@ -256,10 +247,8 @@ class provider implements
         list($insql, $inparams) = $DB->get_in_or_equal($contextids, SQL_PARAMS_NAMED);
         $sql = "SELECT sst.id
                   FROM {%s} sst
-                  JOIN {scormlite_scoes} ss
-                    ON ss.id = sst.scoid
                   JOIN {scormlite} s
-                    ON s.scoid = ss.id
+                    ON s.scoid = sst.scoid
                   JOIN {modules} m
                     ON m.name = 'scormlite'
                   JOIN {course_modules} cm
@@ -279,8 +268,7 @@ class provider implements
      *
      * @param   approved_userlist       $userlist The approved context and user information to delete information for.
      */
-    public static function delete_data_for_users(approved_userlist $userlist)
-    {
+    public static function delete_data_for_users(approved_userlist $userlist) {
         global $DB;
         $context = $userlist->get_context();
 
@@ -292,12 +280,10 @@ class provider implements
         $userids = $userlist->get_userids();
         list($insql, $inparams) = $DB->get_in_or_equal($userids, SQL_PARAMS_NAMED);
 
-        $sql = "SELECT ss.id
+        $sql = "SELECT sst.id
                   FROM {%s} sst
-                  JOIN {scormlite_scoes} ss
-                    ON ss.id = sst.scoid
                   JOIN {scormlite} s
-                    ON s.scoid = ss.id
+                    ON s.scoid = sst.scoid
                   JOIN {modules} m
                     ON m.name = 'scormlite'
                   JOIN {course_modules} cm
@@ -306,7 +292,7 @@ class provider implements
                   JOIN {context} ctx
                     ON ctx.instanceid = cm.id
                  WHERE ctx.id = :contextid
-                   AND ss.userid $insql";
+                   AND sst.userid $insql";
         $params = array_merge($inparams, ['contextid' => $context->id]);
 
         static::delete_data('scormlite_scoes_track', $sql, $params);

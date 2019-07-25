@@ -703,7 +703,8 @@ function scormlite_reset_gradebook($courseid, $type='') {
 function scormlite_reset_userdata($data) {
 	$status = array();
 	if (!empty($data->reset_scormlite)) {
-		// Delete
+
+		// SCORM Lite Tracks
 		$sql = '
 			DELETE SST
 			FROM {scormlite_scoes_track} SST
@@ -712,10 +713,12 @@ function scormlite_reset_userdata($data) {
 			WHERE CM.course=?';
 		global $DB;
 		$DB->execute($sql, array($data->courseid));
+
 		// Grades
         if (empty($data->reset_gradebook_grades)) {
             scormlite_reset_gradebook($data->courseid);
-        }
+		}
+		
 		// Status
 		$status[] = array(
 			'component' => get_string('modulenameplural', 'scormlite'),
