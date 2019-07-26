@@ -18,8 +18,23 @@ namespace mod_scormlite\event;
 
 defined('MOODLE_INTERNAL') || die();
 
-class course_module_viewed extends \core\event\course_module_viewed {
+class scormlite_event extends \core\event\base {
 
+
+    // MUST GET FROM RUNTIME
+
+    // sessionid
+    // attempt
+    // launchmode
+
+    
+    // MUST GET FROM ACTIVITY SETTINGS
+
+    // masteryscore
+    // maxtime
+    // launchmethod
+
+    
     /**
      * Init method.
      */
@@ -35,5 +50,13 @@ class course_module_viewed extends \core\event\course_module_viewed {
     public static function get_objectid_mapping() {
         return array('db' => 'scormlite', 'restore' => 'scormlite');
     }
+
+    /**
+     * Get URL related to the action.
+     */
+    public function get_url() {
+        return new \moodle_url("/mod/$this->objecttable/view.php", array('id' => $this->contextinstanceid));
+    }
+
 }
 

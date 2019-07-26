@@ -352,7 +352,31 @@ function scormlite_parse_quetzal($sco, $cmid, $update = false) {
     // Update DB
     foreach ($questions as $question) {
         $DB->insert_record('scormlite_quetzal_questions', $question);
-    }
+	}
+}
+
+
+//
+// Manifest data
+//
+
+function scormlite_trigger_event($eventname, $course, $cm, $activity, $userid = null, $other = []) {
+	$data = [
+		'objectid' => $activity->id,
+		'context' => context_module::instance($cm->id),
+	];
+	if (isset($userid)) {
+		$data['relateduserid'] = $userid;
+	}
+	if (!empty($other)) {
+		$data['other'] = $other;
+	}
+	$eventclass = '\mod_scormlite\event\\' . $eventname;
+	$event = $eventclass::create($data);
+	$event->add_record_snapshot('course', $course);
+	$event->add_record_snapshot('scormlite', $activity);
+	$event->add_record_snapshot('course_modules', $cm);
+	$event->trigger();
 }
 
 

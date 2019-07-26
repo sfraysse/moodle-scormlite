@@ -21,7 +21,8 @@
 
 // Includes
 require_once('../../config.php');
-require_once($CFG->dirroot.'/mod/scormlite/report/reportlib.php');
+require_once($CFG->dirroot . '/mod/scormlite/locallib.php');
+require_once($CFG->dirroot . '/mod/scormlite/report/reportlib.php');
 
 // Params
 $id = required_param('id', PARAM_INT); 
@@ -53,16 +54,7 @@ if (!$cm->visible and !has_capability('moodle/course:viewhiddenactivities', cont
 // Logs
 //
 
-// KD2015-01 - Replace add_to_log function
-$event = \mod_scormlite\event\course_module_viewed::create(array(
-    'objectid' => $activity->id,
-    'context' => context_module::instance($cm->id),
-));
-$event->add_record_snapshot('course', $course);
-$event->add_record_snapshot('scormlite', $activity);
-$event->add_record_snapshot('course_modules', $cm);
-$event->trigger();
-
+scormlite_trigger_event('course_module_viewed', $course, $cm, $activity);
 
 //
 // Print the page

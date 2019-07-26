@@ -24,6 +24,7 @@ require_once($CFG->dirroot.'/mod/scormlite/report/reportlib.php');
 require_once($CFG->dirroot.'/mod/scormlite/locallib.php');
 
 // Params
+$sessionid = required_param('sessionid', PARAM_INT);    // Session id
 $scoid = required_param('scoid', PARAM_INT);            // SCO id
 $userid = optional_param('userid',$USER->id,PARAM_INT);	// User id
 $attempt = optional_param('attempt', 1, PARAM_INT);     // Attempt
@@ -44,6 +45,22 @@ if (file_exists($hookFile)) require_once($hookFile);
 
 $url = new moodle_url('/mod/scormlite/datamodel.php', array('scoid'=>$scoid, 'id'=>$cm->id, 'userid'=>$userid));
 $PAGE->set_url($url);
+
+
+//
+// Logs
+//
+
+// No no no !!! Too risky !
+$reviewattempt = scormlite_get_relevant_attempt($scoid, $userid);
+$launchmode = $reviewattempt == $attempt ? 'review' : 'normal';  
+
+scormlite_trigger_event('attempt_initialized', $course, $cm, $activity, $userid, [
+	'sessionid' => $sessionid,
+	'attempt' => $attempt,
+	'launchmode' => $launchmode,
+]);
+
 
 //
 // Continue

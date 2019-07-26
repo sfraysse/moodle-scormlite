@@ -18,22 +18,6 @@ namespace mod_scormlite\event;
 
 defined('MOODLE_INTERNAL') || die();
 
-class course_module_viewed extends \core\event\course_module_viewed {
+class course_module_instance_list_viewed extends \core\event\course_module_instance_list_viewed {
 
-    /**
-     * Init method.
-     */
-    protected function init() {
-        $this->data['objecttable'] = 'scormlite';
-        $this->data['crud'] = 'r';
-        $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
-    }
-
-    /**
-     * Get object ID mapping.
-     */
-    public static function get_objectid_mapping() {
-        return array('db' => 'scormlite', 'restore' => 'scormlite');
-    }
 }
-

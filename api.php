@@ -37,6 +37,7 @@ $attempt = optional_param('attempt', 1, PARAM_INT);     // Attempt
 $sco = $DB->get_record("scormlite_scoes", array("id"=>$scoid), '*', MUST_EXIST);
 $activity = scormlite_get_containeractivity($scoid, $sco->containertype);
 $cm = get_coursemodule_from_instance($sco->containertype, $activity->id, 0, false, MUST_EXIST);
+$course = $DB->get_record("course", array("id" => $cm->course), '*', MUST_EXIST);
 
 // Check back URL
 $backurl = str_replace('&amp;', '&', $backurl);
@@ -58,6 +59,24 @@ $PAGE->set_url($url);
 //
 
 require_login($cm->course, false, $cm); // Required for global vars init ($COURSE used to find language)
+
+
+//
+// Logs
+//
+
+$sessionid = random_int(100000, 999999);
+
+// No no no !!! Too risky !
+$reviewattempt = scormlite_get_relevant_attempt($scoid, $userid);
+$launchmode = $reviewattempt == $attempt ? 'review' : 'normal';
+
+scormlite_trigger_event('attempt_launched', $course, $cm, $activity, $userid, [
+	'sessionid' => $sessionid,
+	'attempt' => $attempt,
+	'launchmode' => $launchmode,
+]);
+
 
 //
 // Print the page

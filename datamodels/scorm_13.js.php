@@ -496,7 +496,7 @@ function SCORMapi1_3() {
 			datastring += CollectCustomData(customdata);
 
 			// Add a few params
-			datastring = "id=<?php p($id) ?>&scoid=<?php p($scoid) ?>&userid=<?php p($userid) ?>&attempt=<?php p($attempt) ?>&sesskey=<?php echo sesskey() ?>"+datastring;
+			datastring = "id=<?php p($id) ?>&scoid=<?php p($scoid) ?>&userid=<?php p($userid) ?>&attempt=<?php p($attempt) ?>&sesskey=<?php echo sesskey() ?>&sessionid=<?php echo $sessionid ?>"+datastring;
 			
 			// HTTP request
 			//alert("HTTP request");

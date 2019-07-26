@@ -285,3 +285,10 @@ $string['privacy:metadata:scoes_track:element'] = 'The name of the element to be
 $string['privacy:metadata:scoes_track:value'] = 'The value of the given element';
 $string['privacy:metadata:timemodified'] = 'The time when the tracked element was last modified';
 
+// Events
+$string['event_attempt_launched'] = 'SCORM attempt launched';
+$string['event_attempt_initialized'] = 'SCORM attempt initialized';
+$string['event_attempt_completed'] = 'SCORM attempt completed';
+$string['event_attempt_passed'] = 'SCORM attempt passed';
+$string['event_attempt_failed'] = 'SCORM attempt failed';
+$string['event_attempt_terminated'] = 'SCORM attempt terminated';
