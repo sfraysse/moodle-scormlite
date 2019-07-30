@@ -360,6 +360,24 @@ function scormlite_trigger_scormlite_event($eventname, $course, $cm, $activity, 
 	$event->trigger();
 }
 
+function scormlite_trigger_user_event($eventname, $course, $cm, $activity, $userid, $other = []) {
+	$data = [
+		'objectid' => $activity->id,
+		'context' => context_module::instance($cm->id),
+		'relateduserid' => $userid,
+	];
+	if (!empty($other)) {
+		$data['other'] = $other;
+	}
+	$eventclass = '\mod_scormlite\event\\' . $eventname;
+	$event = $eventclass::create($data);
+	$event->add_record_snapshot('course', $course);
+	$event->add_record_snapshot('scormlite', $activity);
+	$event->add_record_snapshot('course_modules', $cm);
+	$event->trigger();
+}
+
+
 function scormlite_trigger_sco_event($eventname, $course, $cm, $activity, $sco, $userid, $other) {
 	$data = [
 		'objectid' => $sco->id,
@@ -374,5 +392,29 @@ function scormlite_trigger_sco_event($eventname, $course, $cm, $activity, $sco, 
 	$event->add_record_snapshot('course_modules', $cm);
 	$event->trigger();
 }
+
+function uuid() {
+    return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+
+      // 32 bits for "time_low"
+      mt_rand(0, 0xffff), mt_rand(0, 0xffff),
+
+      // 16 bits for "time_mid"
+      mt_rand(0, 0xffff),
+
+      // 16 bits for "time_hi_and_version",
+      // four most significant bits holds version number 4
+      mt_rand(0, 0x0fff) | 0x4000,
+
+      // 16 bits, 8 bits for "clk_seq_hi_res",
+      // 8 bits for "clk_seq_low",
+      // two most significant bits holds zero and one for variant DCE1.1
+      mt_rand(0, 0x3fff) | 0x8000,
+
+      // 48 bits for "node"
+      mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
+    );
+}
+
 
 

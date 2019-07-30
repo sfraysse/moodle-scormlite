@@ -292,3 +292,5 @@ $string['event_attempt_completed'] = 'SCORM attempt completed';
 $string['event_attempt_passed'] = 'SCORM attempt passed';
 $string['event_attempt_failed'] = 'SCORM attempt failed';
 $string['event_attempt_terminated'] = 'SCORM attempt terminated';
+$string['event_result_updated'] = 'SCORM result updated';
+$string['event_attempts_reset'] = 'SCORM attempts reset';

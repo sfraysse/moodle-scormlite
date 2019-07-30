@@ -19,12 +19,6 @@ namespace mod_scormlite\event;
 defined('MOODLE_INTERNAL') || die();
 
 class attempt_terminated extends scormlite_event {
-
-
-    // MUST GET FROM RUNTIME
-
-    // duration
-
     
     /**
      * Return localised event name.

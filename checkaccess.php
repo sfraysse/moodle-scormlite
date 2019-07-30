@@ -24,7 +24,7 @@ require_once($CFG->dirroot . '/mod/scormlite/report/reportlib.php');
 require_once($CFG->dirroot.'/mod/scormlite/locallib.php');
 
 // Params
-$sessionid = required_param('sessionid', PARAM_INT);    // Session id
+$sessionid = required_param('sessionid', PARAM_RAW);    // Session id
 $scoid = required_param('scoid', PARAM_INT);            // SCO id
 $userid = optional_param('userid', $USER->id, PARAM_INT);	// User id
 $attempt = optional_param('attempt', 1, PARAM_INT);     // Attempt

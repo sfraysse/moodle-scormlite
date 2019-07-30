@@ -1755,10 +1755,13 @@ function scormlite_get_highest_attempt_by_element($scoid, $userid, $element) {
     }
 }
 
-function scormlite_delete_attempts($scoid, $userids) {
-	global $DB;
+function scormlite_delete_attempts($scoid, $userids, $course, $cm, $activity) {
+	global $DB, $CFG;
+	require_once($CFG->dirroot . '/mod/scormlite/locallib.php');
+	
     foreach ($userids as $userid) {
-        $DB->delete_records('scormlite_scoes_track', array('scoid'=>$scoid, 'userid'=>$userid));
+		$DB->delete_records('scormlite_scoes_track', array('scoid'=>$scoid, 'userid'=>$userid));
+		scormlite_trigger_user_event('attempts_reset', $course, $cm, $activity, $userid);
 	}
 }
 

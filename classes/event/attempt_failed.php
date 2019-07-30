@@ -20,13 +20,6 @@ defined('MOODLE_INTERNAL') || die();
 
 class attempt_failed extends scormlite_event {
 
-
-    // MUST GET FROM RUNTIME
-
-    // score
-    // duration
-
-
     /**
      * Return localised event name.
      */

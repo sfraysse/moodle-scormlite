@@ -18,20 +18,32 @@ namespace mod_scormlite\event;
 
 defined('MOODLE_INTERNAL') || die();
 
-class attempt_completed extends scormlite_event {
+class attempts_reset extends \core\event\base {
+
+    use utils;
+
 
     /**
      * Return localised event name.
      */
     public static function get_name() {
-        return get_string('event_attempt_completed', 'scormlite');
+        return get_string('event_attempts_reset', 'scormlite');
     }
 
     /**
      * Returns description of what happened.
      */
     public function get_description()  {
-        return "The user with id '$this->userid' completed the SCORM content of the '{$this->objecttable}' activity with the id '$this->contextinstanceid'.";
+        return "The attempts of user with id '$this->userid' have been reset for the '{$this->objecttable}' activity with the id '$this->contextinstanceid'.";
+    }
+
+    /**
+     * Init method.
+     */
+    protected function init() {
+        $this->data['objecttable'] = 'scormlite';
+        $this->data['crud'] = 'r';
+        $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
     }
 
 }

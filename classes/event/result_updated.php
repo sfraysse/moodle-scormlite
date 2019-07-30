@@ -24,6 +24,20 @@ class result_updated extends \core\event\base {
 
     use utils;
 
+    
+    /**
+     * Return localised event name.
+     */
+    public static function get_name() {
+        return get_string('event_result_updated', 'scormlite');
+    }
+
+    /**
+     * Returns description of what happened.
+     */
+    public function get_description()  {
+        return "The results of user with id '$this->userid' have been updated for the '{$this->objecttable}' activity with the id '$this->contextinstanceid'.";
+    }
 
     /**
      * Init method.
