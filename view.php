@@ -54,7 +54,7 @@ if (!$cm->visible and !has_capability('moodle/course:viewhiddenactivities', cont
 // Logs
 //
 
-scormlite_trigger_event('course_module_viewed', $course, $cm, $activity);
+scormlite_trigger_scormlite_event('course_module_viewed', $course, $cm, $activity);
 
 //
 // Print the page

@@ -52,22 +52,6 @@ class scormlite_content_file_info extends file_info_stored {
 		return $empty;
 	}
 }
-/*
-class scormlite_package_file_info extends file_info_stored {
-    public function get_parent() {
-        if ($this->lf->get_filepath() === '/' and $this->lf->get_filename() === '.') {
-            return $this->browser->get_file_info($this->context);
-        }
-        return parent::get_parent();
-    }
-    public function get_visible_name() {
-        if ($this->lf->get_filepath() === '/' and $this->lf->get_filename() === '.') {
-            return $this->topvisiblename;
-        }
-        return parent::get_visible_name();
-    }
-}
-*/
 
 // Parse SCO package
 
@@ -357,17 +341,14 @@ function scormlite_parse_quetzal($sco, $cmid, $update = false) {
 
 
 //
-// Manifest data
+// Events
 //
 
-function scormlite_trigger_event($eventname, $course, $cm, $activity, $userid = null, $other = []) {
+function scormlite_trigger_scormlite_event($eventname, $course, $cm, $activity, $other = []) {
 	$data = [
 		'objectid' => $activity->id,
 		'context' => context_module::instance($cm->id),
 	];
-	if (isset($userid)) {
-		$data['relateduserid'] = $userid;
-	}
 	if (!empty($other)) {
 		$data['other'] = $other;
 	}
@@ -375,6 +356,21 @@ function scormlite_trigger_event($eventname, $course, $cm, $activity, $userid = 
 	$event = $eventclass::create($data);
 	$event->add_record_snapshot('course', $course);
 	$event->add_record_snapshot('scormlite', $activity);
+	$event->add_record_snapshot('course_modules', $cm);
+	$event->trigger();
+}
+
+function scormlite_trigger_sco_event($eventname, $course, $cm, $activity, $sco, $userid, $other) {
+	$data = [
+		'objectid' => $sco->id,
+		'context' => context_module::instance($cm->id),
+		'relateduserid' => $userid,
+		'other' => $other,
+	];
+	$eventclass = '\mod_' . $sco->containertype . '\event\\' . $eventname;
+	$event = $eventclass::create($data);
+	$event->add_record_snapshot('course', $course);
+	$event->add_record_snapshot($sco->containertype, $activity);
 	$event->add_record_snapshot('course_modules', $cm);
 	$event->trigger();
 }

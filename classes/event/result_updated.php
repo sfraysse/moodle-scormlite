@@ -18,7 +18,9 @@ namespace mod_scormlite\event;
 
 defined('MOODLE_INTERNAL') || die();
 
-abstract class scormlite_event extends \core\event\base {
+require_once($CFG->dirroot . '/mod/scormlite/report/reportlib.php');
+
+class result_updated extends \core\event\base {
 
     use utils;
 
@@ -27,7 +29,7 @@ abstract class scormlite_event extends \core\event\base {
      * Init method.
      */
     protected function init() {
-        $this->data['objecttable'] = 'scormlite_scoes';
+        $this->data['objecttable'] = 'scormlite';
         $this->data['crud'] = 'r';
         $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
     }
@@ -37,17 +39,23 @@ abstract class scormlite_event extends \core\event\base {
      * Also used to complete data.
      */
     protected function validate_data() {
+        global $USER;
 
         // Get the SCO
         global $DB;
-        $sco = $DB->get_record('scormlite_scoes', ['id' => $this->data['objectid']]);
+        $scormlite = $DB->get_record('scormlite', ['id' => $this->data['objectid']]);
+        $sco = $DB->get_record('scormlite_scoes', ['id' => $scormlite->scoid]);
 
         // Complete other data
         $this->data['other']['masteryscore'] = $sco->passingscore;
-        $this->data['other']['launchmethod'] = $sco->popup ? 'AnyWindow' : 'OwnWindow';
         if ($sco->maxtime) {
             $this->data['other']['maxtime'] = $this->iso8601_duration($sco->maxtime * 60);
         }
+        $this->data['other']['scoringmethod'] = ['BestAttempt', 'FirstAttempt', 'LastAttempt'][$sco->whatgrade];
+        if ($sco->maxattempt) {
+            $this->data['other']['maxattempts'] = $sco->maxattempt;
+        }
+        $this->data['other']['attemptsnumber'] = scormlite_get_attempt_count($sco->id, $USER->id);
     }
 
 }

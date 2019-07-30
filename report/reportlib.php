@@ -1588,8 +1588,8 @@ function scormlite_get_track($tracks, $scoid, $userid, $attempt=null) {
 	// Pre-sets
 	$usertrack->attempt = $attempt;
 	$usertrack->attemptnb = scormlite_get_attempt_count($scoid, $userid);
-	$usertrack->session_time = '00:00:00';
-	$usertrack->total_time = '00:00:00';
+	$usertrack->session_time = 'PT0H0M0S';
+	$usertrack->total_time = 'PT0H0M0S';
 	$usertrack->score_raw = '';
 	$usertrack->score_scaled = '';
 	$usertrack->status = 'notattempted';  // We keep it only for compatibility with legacy code
@@ -1644,7 +1644,7 @@ function scormlite_get_track($tracks, $scoid, $userid, $attempt=null) {
 	if ($usertrack->score_scaled !== '') {	// Scaled in priority
 		$usertrack->score_raw = (float)sprintf('%2.2f', $usertrack->score_scaled) * 100;
 	} else if ($usertrack->score_raw !== '') {
-		$usertrack->score_scaled = (float)sprintf('%1.4f', $usertrack->score_raw) / 100;   // Supposing that min=0 and max=100 (to be improved) !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		$usertrack->score_scaled = (float)sprintf('%1.4f', $usertrack->score_raw / 100);   // Supposing that min=0 and max=100 (to be improved) !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	}
 	// The end
 	if (is_array($usertrack)) {
