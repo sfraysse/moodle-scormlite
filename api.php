@@ -136,7 +136,7 @@ $review = $usertrack && ($usertrack->status == "passed" || $usertrack->status ==
 scormlite_trigger_sco_event('attempt_launched', $course, $cm, $activity, $sco, $userid, [
 	'sessionid' => $sessionid,
 	'attempt' => $attempt,
-	'launchmode' => $review ? 'review' : 'normal',
+	'launchmode' => $review ? 'Review' : 'Normal',
 ]);
 
 

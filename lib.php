@@ -45,7 +45,7 @@ function scormlite_supports($feature) {
 		case FEATURE_COMPLETION_TRACKS_VIEWS:	return true; // True if module has code to track whether somebody viewed it
 		case FEATURE_COMPLETION_HAS_RULES:		return false; // True if module has custom completion rules
 		case FEATURE_MODEDIT_DEFAULT_COMPLETION:return false; // True if module has default completion
-		case FEATURE_GRADE_HAS_GRADE:			return true; // True if module can provide a grade
+		case FEATURE_GRADE_HAS_GRADE:			return false; // True if module can provide a grade
 		// Next ones should be checked
 		case FEATURE_GRADE_OUTCOMES:			return false; // True if module supports outcomes
 		case FEATURE_ADVANCED_GRADING:			return false; // True if module supports advanced grading methods

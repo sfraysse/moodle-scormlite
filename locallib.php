@@ -394,26 +394,34 @@ function scormlite_trigger_sco_event($eventname, $course, $cm, $activity, $sco, 
 }
 
 function uuid() {
-    return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+	$randomstring = openssl_random_pseudo_bytes(16);
+	$timelow = bin2hex(substr($randomstring, 0, 4));
+	$timemid = bin2hex(substr($randomstring, 4, 2));
+	$timehiandversion = bin2hex(substr($randomstring, 6, 2));
+	$clockseqhiandreserved = bin2hex(substr($randomstring, 8, 2));
+	$node = bin2hex(substr($randomstring, 10, 6));
 
-      // 32 bits for "time_low"
-      mt_rand(0, 0xffff), mt_rand(0, 0xffff),
+	// Set the four most significant bits (bits 12 through 15) of the
+	// timehiandversion field to the 4-bit version number from
+	// Section 4.1.3.
+	$timehiandversion = hexdec($timehiandversion);
+	$timehiandversion = $timehiandversion >> 4;
+	$timehiandversion = $timehiandversion | 0x4000;
 
-      // 16 bits for "time_mid"
-      mt_rand(0, 0xffff),
+	// Set the two most significant bits (bits 6 and 7) of the
+	// clockseqhiandreserved to zero and one, respectively.
+	$clockseqhiandreserved = hexdec($clockseqhiandreserved);
+	$clockseqhiandreserved = $clockseqhiandreserved >> 2;
+	$clockseqhiandreserved = $clockseqhiandreserved | 0x8000;
 
-      // 16 bits for "time_hi_and_version",
-      // four most significant bits holds version number 4
-      mt_rand(0, 0x0fff) | 0x4000,
-
-      // 16 bits, 8 bits for "clk_seq_hi_res",
-      // 8 bits for "clk_seq_low",
-      // two most significant bits holds zero and one for variant DCE1.1
-      mt_rand(0, 0x3fff) | 0x8000,
-
-      // 48 bits for "node"
-      mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
-    );
+	return sprintf(
+		'%08s-%04s-%04x-%04x-%012s',
+		$timelow,
+		$timemid,
+		$timehiandversion,
+		$clockseqhiandreserved,
+		$node
+	);
 }
 
 

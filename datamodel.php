@@ -58,7 +58,7 @@ if (confirm_sesskey() && (!empty($scoid))) {
 	$eventdata = [
 		'sessionid' => $sessionid,
 		'attempt' => $attempt,
-		'launchmode' => $review ? 'review' : 'normal',
+		'launchmode' => $review ? 'Review' : 'Normal',
 	];
 
 	// Error management
@@ -146,8 +146,8 @@ if (confirm_sesskey() && (!empty($scoid))) {
 		if ($passed || $failed) {
 			$usertrack = scormlite_get_tracks($scoid, $userid, $attempt);
 			$successdata = $eventdata;
-			$successdata['score_raw'] = "$usertrack->score_raw";
-			$successdata['score_scaled'] = "$usertrack->score_scaled";
+			$successdata['score_raw'] = $usertrack->score_raw;
+			$successdata['score_scaled'] = $usertrack->score_scaled;
 			$successdata['score_min'] = 0;
 			$successdata['score_max'] = 100;
 			$successdata['duration'] = $currenttime;

@@ -61,13 +61,13 @@ class result_updated extends \core\event\base {
         $sco = $DB->get_record('scormlite_scoes', ['id' => $scormlite->scoid]);
 
         // Complete other data
-        $this->data['other']['masteryscore'] = $sco->passingscore;
+        $this->data['other']['masteryscore'] = intval($sco->passingscore);
         if ($sco->maxtime) {
             $this->data['other']['maxtime'] = $this->iso8601_duration($sco->maxtime * 60);
         }
         $this->data['other']['scoringmethod'] = ['BestAttempt', 'FirstAttempt', 'LastAttempt'][$sco->whatgrade];
         if ($sco->maxattempt) {
-            $this->data['other']['maxattempts'] = $sco->maxattempt;
+            $this->data['other']['maxattempts'] = intval($sco->maxattempt);
         }
         $this->data['other']['attemptsnumber'] = scormlite_get_attempt_count($sco->id, $USER->id);
     }

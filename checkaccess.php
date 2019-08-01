@@ -59,7 +59,7 @@ if (confirm_sesskey() && (!empty($scoid))) {
 		scormlite_trigger_sco_event('attempt_initialized', $course, $cm, $activity, $sco, $userid, [
 			'sessionid' => $sessionid,
 			'attempt' => $attempt,
-			'launchmode' => $review ? 'review' : 'normal',
+			'launchmode' => $review ? 'Review' : 'Normal',
 		]);
 
 		echo "true\n0";

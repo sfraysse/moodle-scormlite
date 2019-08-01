@@ -43,7 +43,7 @@ abstract class scormlite_event extends \core\event\base {
         $sco = $DB->get_record('scormlite_scoes', ['id' => $this->data['objectid']]);
 
         // Complete other data
-        $this->data['other']['masteryscore'] = $sco->passingscore;
+        $this->data['other']['masteryscore'] = intval($sco->passingscore);
         $this->data['other']['launchmethod'] = $sco->popup ? 'AnyWindow' : 'OwnWindow';
         if ($sco->maxtime) {
             $this->data['other']['maxtime'] = $this->iso8601_duration($sco->maxtime * 60);
