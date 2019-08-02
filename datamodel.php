@@ -182,7 +182,7 @@ if (confirm_sesskey() && (!empty($scoid))) {
 				$successdata['attempt'] = $attempt;
 				$successdata['success'] = $passed;
 				unset($successdata['sessionid']);
-				scormlite_trigger_scormlite_event('result_updated', $course, $cm, $activity, $successdata);
+				scormlite_trigger_sco_event('sco_result_updated', $course, $cm, $activity, $sco, $userid, $successdata);
 			}
 		}
 

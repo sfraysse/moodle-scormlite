@@ -18,7 +18,7 @@ namespace mod_scormlite\event;
 
 defined('MOODLE_INTERNAL') || die();
 
-class attempt_failed extends scormlite_event {
+class attempt_failed extends sco_event {
 
     /**
      * Return localised event name.

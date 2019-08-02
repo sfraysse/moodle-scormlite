@@ -207,7 +207,6 @@ function scormlite_print_error($msg, $backhtml = '', $header = false, $cm = null
 
 // Insert track for a SCO
 
-// SF2018 - Signature change
 function scormlite_insert_track($userid, $scoid, $attempt, $element, $value, $containertype = 'scormlite') {
     global $DB, $CFG;
     $id = null;
@@ -238,7 +237,6 @@ function scormlite_insert_track($userid, $scoid, $attempt, $element, $value, $co
     return $id;
 }
 
-// SF2018 - Record tracks hook
 // Record track
 
 function scormlite_record_track_hooker($track, $containertype = 'scormlite') {
@@ -278,6 +276,7 @@ function scormlite_check_grades($userid, $activity, $cm, $course, $containertype
         call_user_func_array($function, $args);
 	}
 }
+
 
 //
 // Container data
@@ -360,31 +359,15 @@ function scormlite_trigger_scormlite_event($eventname, $course, $cm, $activity, 
 	$event->trigger();
 }
 
-function scormlite_trigger_user_event($eventname, $course, $cm, $activity, $userid, $other = []) {
+function scormlite_trigger_sco_event($eventname, $course, $cm, $activity, $sco, $userid, $other = []) {
 	$data = [
-		'objectid' => $activity->id,
+		'objectid' => $sco->id,
 		'context' => context_module::instance($cm->id),
 		'relateduserid' => $userid,
 	];
 	if (!empty($other)) {
 		$data['other'] = $other;
 	}
-	$eventclass = '\mod_scormlite\event\\' . $eventname;
-	$event = $eventclass::create($data);
-	$event->add_record_snapshot('course', $course);
-	$event->add_record_snapshot('scormlite', $activity);
-	$event->add_record_snapshot('course_modules', $cm);
-	$event->trigger();
-}
-
-
-function scormlite_trigger_sco_event($eventname, $course, $cm, $activity, $sco, $userid, $other) {
-	$data = [
-		'objectid' => $sco->id,
-		'context' => context_module::instance($cm->id),
-		'relateduserid' => $userid,
-		'other' => $other,
-	];
 	$eventclass = '\mod_' . $sco->containertype . '\event\\' . $eventname;
 	$event = $eventclass::create($data);
 	$event->add_record_snapshot('course', $course);

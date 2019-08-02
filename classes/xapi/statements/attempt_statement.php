@@ -61,7 +61,10 @@ abstract class attempt_statement extends base_statement {
      * @return array
      */
     protected function statement_object() {
-        $module = $this->activities->get('scormlite', $this->event->objectid, false, 'module', 'scormlite', 'mod_scormlite');
+        global $DB;
+        $cm = $DB->get_record('course_modules', ['id' => $this->event->contextinstanceid]);
+        $module = $this->activities->get('scormlite', $cm->instance, true, 'module', 'scormlite', 'mod_scormlite');
+
         return [
             'objectType' => 'Activity',
             'id' => $module['id'] . '/sco',

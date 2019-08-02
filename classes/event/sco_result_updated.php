@@ -20,10 +20,7 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/mod/scormlite/report/reportlib.php');
 
-class result_updated extends \core\event\base {
-
-    use utils;
-
+class sco_result_updated extends sco_event {
     
     /**
      * Return localised event name.
@@ -40,25 +37,14 @@ class result_updated extends \core\event\base {
     }
 
     /**
-     * Init method.
-     */
-    protected function init() {
-        $this->data['objecttable'] = 'scormlite';
-        $this->data['crud'] = 'r';
-        $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
-    }
-
-    /**
      * Let developers validate their custom data (such as $this->data['other'], contextlevel, etc.).
      * Also used to complete data.
      */
     protected function validate_data() {
-        global $USER;
+        global $USER, $DB;
 
         // Get the SCO
-        global $DB;
-        $scormlite = $DB->get_record('scormlite', ['id' => $this->data['objectid']]);
-        $sco = $DB->get_record('scormlite_scoes', ['id' => $scormlite->scoid]);
+        $sco = $DB->get_record('scormlite_scoes', ['id' => $this->data['objectid']]);
 
         // Complete other data
         $this->data['other']['masteryscore'] = intval($sco->passingscore);

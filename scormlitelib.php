@@ -76,3 +76,4 @@ function scormlite_get_grades($activity) {
 	return $grades;
 }
 
+

@@ -36,7 +36,7 @@ use logstore_trax\src\utils\module_context;
  * @copyright  2019 Sébastien Fraysse {@link http://fraysse.eu}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class result_updated extends base_statement {
+class sco_result_updated extends base_statement {
 
     use module_context, statement_utils;
 
@@ -62,12 +62,15 @@ class result_updated extends base_statement {
      * @return array
      */
     protected function statement() {
+        global $DB;
+        $cm = $DB->get_record('course_modules', ['id' => $this->event->contextinstanceid]);
+        $object = $this->activities->get('scormlite', $cm->instance, true, 'module', 'scormlite', 'mod_scormlite');
 
         return array_replace($this->statement_base(), [
             'actor' => $this->actors->get('user', $this->event->userid),
             'verb' => $this->verbs->get($this->eventother->success ? 'passed' : 'failed'),
             'result' => $this->statement_result($this->eventother->success),
-            'object' => $this->activities->get('scormlite', $this->event->objectid, true, 'module', 'scormlite', 'mod_scormlite'),
+            'object' => $object,
         ]);
     }
 

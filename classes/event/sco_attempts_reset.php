@@ -18,10 +18,7 @@ namespace mod_scormlite\event;
 
 defined('MOODLE_INTERNAL') || die();
 
-class attempts_reset extends \core\event\base {
-
-    use utils;
-
+class sco_attempts_reset extends sco_event {
 
     /**
      * Return localised event name.
@@ -38,13 +35,12 @@ class attempts_reset extends \core\event\base {
     }
 
     /**
-     * Init method.
+     * Let developers validate their custom data (such as $this->data['other'], contextlevel, etc.).
+     * Also used to complete data.
      */
-    protected function init() {
-        $this->data['objecttable'] = 'scormlite';
-        $this->data['crud'] = 'r';
-        $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
+    protected function validate_data() {
     }
+
 
 }
 

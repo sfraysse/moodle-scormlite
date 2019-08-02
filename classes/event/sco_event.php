@@ -18,27 +18,46 @@ namespace mod_scormlite\event;
 
 defined('MOODLE_INTERNAL') || die();
 
-trait utils {
+abstract class sco_event extends \core\event\base {
+
+    /**
+     * Init method.
+     */
+    protected function init() {
+        $this->data['objecttable'] = 'scormlite_scoes';
+        $this->data['crud'] = 'r';
+        $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
+    }
+
+    /**
+     * Let developers validate their custom data (such as $this->data['other'], contextlevel, etc.).
+     * Also used to complete data.
+     */
+    protected function validate_data() {
+
+        // Get the SCO
+        global $DB;
+        $sco = $DB->get_record('scormlite_scoes', ['id' => $this->data['objectid']]);
+
+        // Complete other data
+        $this->data['other']['masteryscore'] = intval($sco->passingscore);
+        $this->data['other']['launchmethod'] = $sco->popup ? 'AnyWindow' : 'OwnWindow';
+        if ($sco->maxtime) {
+            $this->data['other']['maxtime'] = $this->iso8601_duration($sco->maxtime * 60);
+        }
+    }
 
     /**
      * Get object ID mapping.
      */
     public static function get_objectid_mapping() {
-        return array('db' => 'scormlite', 'restore' => 'scormlite');
-    }
-
-    /**
-     * Get URL related to the action.
-     */
-    public function get_url() {
-        return new \moodle_url("/mod/$this->objecttable/view.php", array('id' => $this->contextinstanceid));
+        return false;
     }
 
     /**
      * Convert second to ISO duration.
      */
-    protected function iso8601_duration($seconds)
-    {
+    protected function iso8601_duration($seconds) {
         $intervals = array('D' => 60 * 60 * 24, 'H' => 60 * 60, 'M' => 60, 'S' => 1);
 
         $pt = 'PT';
@@ -56,5 +75,7 @@ trait utils {
             $result = '0S';
         return "$pt$result";
     }
+
+
 }
 
