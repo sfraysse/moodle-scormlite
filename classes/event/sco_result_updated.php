@@ -33,7 +33,8 @@ class sco_result_updated extends sco_event {
      * Returns description of what happened.
      */
     public function get_description()  {
-        return "The results of user with id '$this->userid' have been updated for the '{$this->objecttable}' activity with the id '$this->contextinstanceid'.";
+        return "The results of user with id '$this->userid' have been updated 
+            for the '{$this->objecttable}' activity with the id '$this->contextinstanceid'.";
     }
 
     /**

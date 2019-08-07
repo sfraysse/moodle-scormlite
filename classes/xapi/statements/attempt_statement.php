@@ -69,7 +69,10 @@ abstract class attempt_statement extends base_statement {
             'objectType' => 'Activity',
             'id' => $module['id'] . '/sco',
             'definition' => [
-                'type' => $this->activities->types->type('sco')
+                'type' => $this->activities->types->type('sco'),
+                'extensions' => [
+                    'http://vocab.xapi.fr/extensions/standard' => 'scorm'
+                ]
             ]
         ];
     }

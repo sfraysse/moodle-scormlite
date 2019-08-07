@@ -26,6 +26,9 @@ namespace mod_scormlite\xapi\statements;
 
 defined('MOODLE_INTERNAL') || die();
 
+use logstore_trax\src\statements\base_statement;
+use logstore_trax\src\utils\module_context;
+
 /**
  * xAPI transformation of a SCORM Lite event.
  *
@@ -33,36 +36,21 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2019 Sébastien Fraysse {@link http://fraysse.eu}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class sco_result_updated extends sco_statement {
+abstract class sco_statement extends base_statement {
 
-    /**
-     * Context properties.
-     *
-     * @var array $contextprops
-     */
-    protected $contextprops = ['attemptsnumber', 'maxattempts', 'masteryscore', 'scoringmethod', 'maxtime'];
-
-    /**
-     * Result properties.
-     *
-     * @var array $resultprops
-     */
-    protected $resultprops = ['score', 'duration'];
+    use module_context, statement_utils;
 
 
     /**
-     * Build the Statement.
+     * Get the base Statement.
      *
      * @return array
      */
-    protected function statement() {
-
-        return array_replace($this->statement_base(), [
-            'actor' => $this->actors->get('user', $this->event->userid),
-            'verb' => $this->verbs->get($this->eventother->success ? 'passed' : 'failed'),
-            'result' => $this->statement_result($this->eventother->success),
-            'object' => $this->statement_object(),
-        ]);
+    protected function statement_base() {
+        return [
+            'context' => $this->statement_context(),
+            'timestamp' => date('c', $this->event->timecreated),
+        ];
     }
 
     /**
@@ -70,14 +58,18 @@ class sco_result_updated extends sco_statement {
      *
      * @return array
      */
-    protected function statement_context() {
-        $context = $this->base_context('scormlite', true, 'scormlite', 'mod_scormlite');
+    abstract protected function statement_context();
 
-        // Mandatory extensions.
-        $context['extensions']['http://id.tincanapi.com/extension/attempt-id'] 
-            = $this->eventother->attempt;
-
-        return $this->add_context_props($context);
+    /**
+     * Get the object.
+     *
+     * @return array
+     */
+    protected function statement_object() {
+        global $DB;
+        $cm = $DB->get_record('course_modules', ['id' => $this->event->contextinstanceid]);
+        return $this->activities->get('scormlite', $cm->instance, true, 'module', 'scormlite', 'mod_scormlite');
     }
+
 
 }

@@ -18,7 +18,7 @@ namespace mod_scormlite\event;
 
 defined('MOODLE_INTERNAL') || die();
 
-class sco_attempts_reset extends sco_event {
+class sco_result_reset extends sco_event {
 
     /**
      * Return localised event name.
@@ -31,7 +31,8 @@ class sco_attempts_reset extends sco_event {
      * Returns description of what happened.
      */
     public function get_description()  {
-        return "The attempts of user with id '$this->userid' have been reset for the '{$this->objecttable}' activity with the id '$this->contextinstanceid'.";
+        return "The results of user with id '$this->relateduserid' have been reset 
+            by user with id '$this->userid' for the '{$this->objecttable}' activity with the id '$this->contextinstanceid'.";
     }
 
     /**

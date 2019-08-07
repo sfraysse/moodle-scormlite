@@ -33,21 +33,21 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2019 Sébastien Fraysse {@link http://fraysse.eu}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class sco_result_updated extends sco_statement {
+class sco_result_changed extends sco_statement {
 
     /**
      * Context properties.
      *
      * @var array $contextprops
      */
-    protected $contextprops = ['attemptsnumber', 'maxattempts', 'masteryscore', 'scoringmethod', 'maxtime'];
+    protected $contextprops = ['masteryscore'];
 
     /**
      * Result properties.
      *
      * @var array $resultprops
      */
-    protected $resultprops = ['score', 'duration'];
+    protected $resultprops = ['score'];
 
 
     /**
@@ -58,7 +58,7 @@ class sco_result_updated extends sco_statement {
     protected function statement() {
 
         return array_replace($this->statement_base(), [
-            'actor' => $this->actors->get('user', $this->event->userid),
+            'actor' => $this->actors->get('user', $this->event->relateduserid),
             'verb' => $this->verbs->get($this->eventother->success ? 'passed' : 'failed'),
             'result' => $this->statement_result($this->eventother->success),
             'object' => $this->statement_object(),
@@ -73,10 +73,9 @@ class sco_result_updated extends sco_statement {
     protected function statement_context() {
         $context = $this->base_context('scormlite', true, 'scormlite', 'mod_scormlite');
 
-        // Mandatory extensions.
-        $context['extensions']['http://id.tincanapi.com/extension/attempt-id'] 
-            = $this->eventother->attempt;
-
+        // Add instructor.
+        $context['instructor'] = $this->actors->get('user', $this->event->userid);
+        
         return $this->add_context_props($context);
     }
 

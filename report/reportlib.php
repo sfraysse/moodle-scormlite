@@ -1762,7 +1762,7 @@ function scormlite_delete_attempts($scoid, $userids, $course, $cm, $activity) {
     foreach ($userids as $userid) {
 		$DB->delete_records('scormlite_scoes_track', array('scoid'=>$scoid, 'userid'=>$userid));
 		$sco = $DB->get_record('scormlite_scoes', ['id' => $scoid]);
-		scormlite_trigger_sco_event('sco_result_updated', $course, $cm, $activity, $sco, $userid);
+		scormlite_trigger_sco_event('sco_result_reset', $course, $cm, $activity, $sco, $userid);
 	}
 }
 
