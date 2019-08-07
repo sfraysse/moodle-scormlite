@@ -130,9 +130,9 @@ if ($sco->maxtime != 0) { // 0 means "no max time"
 // Logs
 //
 
-$sessionid = uuid();
-$review = $usertrack && ($usertrack->status == "passed" || $usertrack->status == "failed");
+$sessionid = uuid();	// Never commet this!
 
+$review = $usertrack && ($usertrack->status == "passed" || $usertrack->status == "failed");
 scormlite_trigger_sco_event('attempt_launched', $course, $cm, $activity, $sco, $userid, [
 	'sessionid' => $sessionid,
 	'attempt' => $attempt,

@@ -55,7 +55,6 @@ if (confirm_sesskey() && (!empty($scoid))) {
 
 		$usertrack = scormlite_get_tracks($scoid, $userid, $attempt);
 		$review = $usertrack && ($usertrack->status == "passed" || $usertrack->status == "failed");
-
 		scormlite_trigger_sco_event('attempt_initialized', $course, $cm, $activity, $sco, $userid, [
 			'sessionid' => $sessionid,
 			'attempt' => $attempt,

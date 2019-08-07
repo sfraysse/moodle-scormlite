@@ -369,6 +369,7 @@ function scormlite_trigger_sco_event($eventname, $course, $cm, $activity, $sco, 
 		$data['other'] = $other;
 	}
 	$eventclass = '\mod_' . $sco->containertype . '\event\\' . $eventname;
+	if (!class_exists($eventclass)) return;
 	$event = $eventclass::create($data);
 	$event->add_record_snapshot('course', $course);
 	$event->add_record_snapshot($sco->containertype, $activity);

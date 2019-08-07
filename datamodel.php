@@ -139,7 +139,7 @@ if (confirm_sesskey() && (!empty($scoid))) {
 		}
 	}
 	if ($result) {
-	
+
 		// Logs
 
 		// Passed or failed log
