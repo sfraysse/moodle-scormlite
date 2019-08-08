@@ -24,7 +24,7 @@ class sco_result_reset extends sco_event {
      * Return localised event name.
      */
     public static function get_name() {
-        return get_string('event_attempts_reset', 'scormlite');
+        return get_string('event_result_reset', 'scormlite');
     }
 
     /**
