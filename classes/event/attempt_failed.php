@@ -24,7 +24,7 @@ class attempt_failed extends sco_event {
      * Return localised event name.
      */
     public static function get_name() {
-        return get_string('event_attempt_failed', 'scormlite');
+        return get_string('event:attempt_failed', 'scormlite');
     }
 
     /**

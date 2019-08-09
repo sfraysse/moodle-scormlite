@@ -18,20 +18,20 @@ namespace mod_scormlite\event;
 
 defined('MOODLE_INTERNAL') || die();
 
-class sco_result_changed extends sco_result_updated {
+class sco_result_forced extends sco_result_updated {
     
     /**
      * Return localised event name.
      */
     public static function get_name() {
-        return get_string('event_result_changed', 'scormlite');
+        return get_string('event:sco_result_forced', 'scormlite');
     }
 
     /**
      * Returns description of what happened.
      */
     public function get_description()  {
-        return "The results of user with id '$this->relateduserid' have been changed 
+        return "The results of user with id '$this->relateduserid' have been forced 
             by user with id '$this->userid' for the '{$this->objecttable}' activity with the id '$this->contextinstanceid'.";
     }
 
