@@ -31,7 +31,7 @@ class attempt_launched extends sco_event {
      * Returns description of what happened.
      */
     public function get_description()  {
-        return "The user with id '$this->userid' launched the SCORM content of the '{$this->objecttable}' activity with the id '$this->contextinstanceid'.";
+        return "The user with id '$this->userid' launched the SCORM content of the '{$this->objecttable}' activity with the course module id '$this->contextinstanceid'.";
     }
 
 }

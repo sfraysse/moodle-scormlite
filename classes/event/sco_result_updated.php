@@ -34,7 +34,7 @@ class sco_result_updated extends sco_event {
      */
     public function get_description()  {
         return "The results of user with id '$this->userid' have been updated 
-            for the '{$this->objecttable}' activity with the id '$this->contextinstanceid'.";
+            for the '{$this->objecttable}' activity with the course module id '$this->contextinstanceid'.";
     }
 
     /**

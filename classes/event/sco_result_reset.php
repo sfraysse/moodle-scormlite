@@ -32,7 +32,7 @@ class sco_result_reset extends sco_event {
      */
     public function get_description()  {
         return "The results of user with id '$this->relateduserid' have been reset 
-            by user with id '$this->userid' for the '{$this->objecttable}' activity with the id '$this->contextinstanceid'.";
+            by user with id '$this->userid' for the '{$this->objecttable}' activity with the course module id '$this->contextinstanceid'.";
     }
 
     /**

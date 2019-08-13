@@ -31,7 +31,7 @@ class attempt_terminated extends sco_event {
      * Returns description of what happened.
      */
     public function get_description()  {
-        return "The user with id '$this->userid' terminated the SCORM content of the '{$this->objecttable}' activity with the id '$this->contextinstanceid'.";
+        return "The user with id '$this->userid' terminated the SCORM content of the '{$this->objecttable}' activity with the course module id '$this->contextinstanceid'.";
     }
 
 }
