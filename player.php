@@ -90,7 +90,7 @@ $backurl = urlencode($backurl);
 				// SF2018 - Add a close button
 				$containerConfig = get_config($sco->containertype);
 				if (!isset($containerConfig->displayclosebutton) || $containerConfig->displayclosebutton) {
-					$unload_url = (new moodle_url('/mod/scormlite/empty.php'))->out();
+					$unload_url = (new moodle_url('/mod/scormlite/exit.php', ['backurl' => $backurl]))->out();
 					echo "<button onclick=\"document.getElementById('scoframe1').src = '" . $unload_url . "';\" class='btn btn-primary btn-sm' style='margin-bottom:10px;'>" . get_string('manualopenclose', 'scormlite') . "</button>\n";
 				}
 

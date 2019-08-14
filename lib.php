@@ -421,7 +421,7 @@ function scormlite_get_file_areas($course, $cm, $context) {
 /**
  * File browsing support for SCORM file areas
  *
- * @param stdclass $browser
+ * @param file_browser $browser
  * @param stdclass $areas
  * @param stdclass $course
  * @param stdclass $cm

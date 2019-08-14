@@ -156,6 +156,7 @@ $string['restart'] = 'Recommencer';
 $string['resume'] = 'Reprendre';
 // Content
 $string['activityloading'] = 'Vous allez être automatiquement redirigé vers l\'activité...';
+$string['activityunloading'] = 'Activité en cours de déchargement, merci de patienter...';
 $string['activitypleasewait'] = 'Activité en cours de chargement, merci de patienter...';
 $string['popupmessage'] = "Le contenu doit s'ouvrir dans une nouvelle fenêtre. 
 Si ce n'est pas le cas, merci de vérifier les paramètres de blocage des fenêtres de votre navigateur. 

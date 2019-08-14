@@ -155,6 +155,7 @@ $string['restart'] = 'Restart';
 $string['resume'] = 'Resume';
 // Content
 $string['activityloading'] = 'You will be automatically redirected to the activity in';
+$string['activityunloading'] = 'Activity unloading, please wait ...';
 $string['activitypleasewait'] = 'Activity loading, please wait ...';
 $string['popupmessage'] = "Your content should have been opened in a new window. If not, you should check your browser settings to enable popup windows, before starting again.
 Please, don't navigate in this window before closing the content window.
