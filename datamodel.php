@@ -86,6 +86,11 @@ if (confirm_sesskey() && (!empty($scoid))) {
 		if ($USER->id == $userid 
 			&& !in_array($element, array('id', 'scoid', 'sesskey', 'attempt', 'userid', 'current_time', 'terminate_time'))) {
 
+            // Avoid completion regression.
+			if ($element == 'cmi.completion_status' && $value != 'completed' && $usertrack->completion_status == 'completed') {
+                continue;
+            }
+
 			// Record the element
 			$res = scormlite_insert_track($userid, $scoid, $attempt, $element, $value, $sco->containertype);
 			if ($res) {
