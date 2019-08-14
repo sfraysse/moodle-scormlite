@@ -60,8 +60,8 @@ class attempt_terminated extends attempt_statement {
         return array_replace($this->statement_base(), [
             'actor' => $this->actors->get('user', $this->event->userid),
             'verb' => $this->verbs->get('terminated'),
-            'result' => $this->statement_result(),
             'object' => $this->statement_object(),
+            'result' => $this->statement_result(),
         ]);
     }
 

@@ -60,8 +60,8 @@ class attempt_failed extends attempt_statement {
         return array_replace($this->statement_base(), [
             'actor' => $this->actors->get('user', $this->event->userid),
             'verb' => $this->verbs->get('failed'),
-            'result' => $this->statement_result(false),
             'object' => $this->statement_object(),
+            'result' => $this->statement_result(false),
         ]);
     }
 
