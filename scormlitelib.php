@@ -68,7 +68,7 @@ function scormlite_get_grades($activity) {
     $grades = array();
     if ($usertracks = scormlite_get_tracks($activity->scoid)) {
         foreach ($usertracks as $userid => $tracks) {
-			if ($tracks->success_status == "passed" || $tracks->success_status == "failed" || $tracks->completion_status == "completed") {
+			if ($tracks->success_status == "passed" || $tracks->success_status == "failed") {  // || $tracks->completion_status == "completed") {
 	            $grades[$userid] = $tracks->score_raw;
 			}
         }
