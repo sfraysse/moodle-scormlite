@@ -54,7 +54,7 @@ $string['code_help'] = 'The code is used as a short name to identify the content
 $string['package'] = 'Package file';
 $string['package_help'] = 'The package file is a zip file containing SCORM Lite content (SCORM 2004 mono-SCO).';
 // Availability
-$string['timerestrict'] = 'Restrict answering to this time period';
+$string['timerestrict'] = 'Access period';
 $string['manualopen'] = 'Availability';
 $string['manualopendesc'] = 'This setting allows to force the activity opening or closing, without taking into account the opening and closing dates.';
 $string['manualopendates'] = 'Use the dates';

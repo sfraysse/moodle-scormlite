@@ -54,7 +54,7 @@ $string['code_help'] = 'Le code est utilisé comme un nom court pour identifier 
 $string['package'] = 'Package';
 $string['package_help'] = 'Le package est un fichier zip qui contient un contenu SCORM Lite (SCORM 2004 mono-SCO).';
 // Availability
-$string['timerestrict'] = 'Limiter les réponses à cette période';
+$string['timerestrict'] = "Période d'accès";
 $string['manualopen'] = 'Disponibilité';
 $string['manualopendesc'] = 'Ce paramètre permet de forcer l\'ouverture ou la fermeture de l\'activité, sans tenir compte des dates d\'ouverture et de fermeture.';
 $string['manualopendates'] = 'Utiliser les dates';
