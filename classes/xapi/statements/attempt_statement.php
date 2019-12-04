@@ -87,7 +87,6 @@ abstract class attempt_statement extends base_statement {
 
         // CMI5 profile.
         $context['contextActivities']['category'][] = [
-            'objectType' => 'Activity',
             'id' => 'https://w3id.org/xapi/cmi5/context/categories/cmi5',
             'definition' => ['type' => 'http://adlnet.gov/expapi/activities/profile'],
         ];
