@@ -126,59 +126,53 @@ function scormlite_get_launchfile_from_manifest($file) {
 
 // Check permissions to display SCO
 
-function scormlite_check_player_permissions($cm, $sco, $userid, $attempt=1, $backhtml = '', $header = false, $activity = null, $course = null) {
-	global $USER, $CFG, $OUTPUT;
-	require_login($cm->course, false, $cm);
-	$allowed = true;
-	// Check activity visibility
-	if (!$cm->visible and !has_capability('moodle/course:viewhiddenactivities', context_course::instance($cm->course))) {  // KD2014 - 2.6 compliance
-		$allowed = false;
-		print_error('activityiscurrentlyhidden');
-	}
-	// Check user
-	if ($USER->id != $userid) {
-		if (!has_capability('mod/scormlite:reviewothercontent', context_module::instance($cm->id))) {  // KD2014 - 2.6 compliance
-			$allowed = false;
-			print_error('notallowed', 'scormlite');
-		}
-	}
-	// Review mode
-	require_once($CFG->dirroot.'/mod/scormlite/report/reportlib.php');
-	$reviewmode = false;
-	$achieved = false;
-	if ($trackdata = scormlite_get_tracks($sco->id, $userid, $attempt)) {
-		$achieved = ($trackdata->status == 'passed' || $trackdata->status == 'failed');
-		// NNX2017 - Don't decide here the rules to be in review mode
-		$reviewmode = true;  //$achieved && ($sco->manualopen == 2 || ($sco->manualopen == 0 && time() > $sco->timeclose));
-	}
-	// Disable access to content by another user if content is not in review mode
-	if (!$reviewmode && $userid != $USER->id) {
-		$allowed = false;
-		print_error('notallowed', 'scormlite');
-	}
-	// Disable access if acheived but not review
-	if (!$reviewmode && $achieved) {
-		$allowed = false;
-		scormlite_print_error(get_string('accessdenied', 'scormlite'), $backhtml, $header, $cm, $activity, $course);
-	}
-    // Check attempt
-
-    // SF2018 - Illimited attempts except for students
-    $illimitedAccess = has_capability('mod/scormlite:viewotherreport', context_module::instance($cm->id));
-	$attemptmax = $sco->maxattempt;
-    if ($attemptmax != 0 && $attempt > $attemptmax && !$illimitedAccess) {
-		
-		$allowed = false;
-		print_error('notallowed', 'scormlite');
+function scormlite_check_player_permissions($cm, $sco, $userid, $attempt = 1, $backhtml = '', $header = false, $activity = null, $course = null) {
+    global $USER, $CFG;
+    require_login($cm->course, false, $cm);
+    
+    // Invisible activity not allowed without a specific capability.
+    if (!$cm->visible and !has_capability('moodle/course:viewhiddenactivities', context_course::instance($cm->course))) {
+        print_error('activityiscurrentlyhidden');
     }
-            
-	// Check if scorm closed, and print a message if closed
-	list($html, $scormopen) = scormlite_get_availability($cm, $sco, $trackdata); 
-	if (!$scormopen && !$reviewmode && !$illimitedAccess) {
-		echo $html;
-		die;
-	}
-	return $allowed;
+    
+    // Different user not allowed without a specific capability.
+    if ($USER->id != $userid && !has_capability('mod/scormlite:reviewothercontent', context_module::instance($cm->id))) {
+        print_error('notallowed', 'scormlite');
+    }
+
+    // Determine if the activity is achieved and if we are in review mode.
+    require_once($CFG->dirroot.'/mod/scormlite/report/reportlib.php');
+    $achieved = false;
+    $reviewmode = false;
+    if ($trackdata = scormlite_get_tracks($sco->id, $userid, $attempt)) {
+        $achieved = ($trackdata->status == 'passed' || $trackdata->status == 'failed');
+        $reviewmode = $achieved && scormlite_has_review_access($sco, $trackdata);
+    }
+
+    // Playing be others is allowed only in review mode.
+    if ($userid != $USER->id && !$reviewmode) {
+        print_error('notallowed', 'scormlite');
+    }
+
+    // Playing when achieved is allowed only in review mode.
+    if ($achieved && !$reviewmode) {
+        scormlite_print_error(get_string('accessdenied', 'scormlite'), $backhtml, $header, $cm, $activity, $course);
+    }
+
+    // Check if we reached the max attempt.
+    $illimitedAccess = has_capability('mod/scormlite:viewotherreport', context_module::instance($cm->id));
+    if ($sco->maxattempt != 0 && $attempt > $sco->maxattempt && !$illimitedAccess) {
+        print_error('notallowed', 'scormlite');
+    }
+        
+    // Check if SCORM access has been closed.
+    list($html, $scormopen) = scormlite_get_availability($cm, $sco, $trackdata); 
+    if (!$scormopen && !$reviewmode && !$illimitedAccess) {
+        echo $html;
+        die;
+    }
+
+    return true;
 }
 
 // Print error function (not the Moodle error format)

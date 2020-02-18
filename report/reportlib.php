@@ -486,6 +486,17 @@ function scormlite_has_review_access($sco, $trackdata)
 	return $sco->manualopen == 2 || ($sco->manualopen == 0 && time() > $sco->timeclose);
 }
 
+// Check if a user can run a new attempt
+
+function scormlite_has_new_attempt($sco, $trackdata, $attemptnumber)
+{
+    $achieved = ($trackdata->status == 'passed' || $trackdata->status == 'failed');
+    $stillOpen = $sco->manualopen == 1 || ($sco->manualopen == 0 && time() <= $sco->timeclose);
+    $newAttemptAllowed = $sco->maxattempt == 0 || ($attemptnumber < $sco->maxattempt);
+    $lockedAfterSuccess = $trackdata->status == 'passed' && $sco->lock_attempts_after_success;
+    return $achieved && $stillOpen && $newAttemptAllowed && !$lockedAfterSuccess;
+}
+
 
 // Print possible actions (or nothing if not available)
 
@@ -499,10 +510,9 @@ function scormlite_get_myactions($cm, $sco, $trackdata, $scormopen = true, $back
     global $USER;
 	$html = '';
 	$userid = $USER->id;
-	$playerurl = new moodle_url('/mod/scormlite/player.php', array('scoid' => $sco->id, 'backurl'=>$backurl));
-	$achieved = ($trackdata->status == 'passed' || $trackdata->status == 'failed');
-	$reviewModeOnly = $achieved && ($sco->manualopen == 2 || ($sco->manualopen == 0 && time() > $sco->timeclose));
-	$reviewMode = $achieved && scormlite_has_early_review_access($sco, $trackdata);
+    $playerurl = new moodle_url('/mod/scormlite/player.php', array('scoid' => $sco->id, 'backurl'=>$backurl));
+    $achieved = ($trackdata->status == 'passed' || $trackdata->status == 'failed');
+	$reviewMode = $achieved && scormlite_has_review_access($sco, $trackdata);
     $attemptnumber = scormlite_get_attempt_count($sco->id, $userid);
 	$action = '';
 	if ($achieved) {
@@ -513,39 +523,25 @@ function scormlite_get_myactions($cm, $sco, $trackdata, $scormopen = true, $back
             $playerurl .= '&attempt=1';
 			$html .= '<a href="'.$playerurl.'" class="btn btn-primary" role="button">'.get_string("start", "scormlite").'</a>';
 			
-		} else if ($reviewModeOnly && has_capability('mod/scormlite:reviewmycontent', context_module::instance($cm->id))) {   // KD2014 - 2.6 compliance
-			
-			// Can be reviewed
-			$action = 'review';
-            $attempt = scormlite_get_relevant_attempt($sco->id, $userid);
-            $playerurl .= '&attempt='.$attempt;
-			$html .= '<a href="'.$playerurl.'" class="btn btn-primary" role="button">'.get_string("review", "scormlite").'</a>';
-			
         } else {
-			
-			// Review mode
-			if ($reviewMode && has_capability('mod/scormlite:reviewmycontent', context_module::instance($cm->id))) {
 
-				// Can be reviewed
-				$action = 'review';
-				$attempt = scormlite_get_relevant_attempt($sco->id, $userid);
-				$playerurl .= '&attempt='.$attempt;
-				$html .= '<a href="'.$playerurl.'" class="btn btn-primary" role="button">'.get_string("review", "scormlite").'</a>&nbsp;&nbsp;&nbsp;';
-			}
-
-            // Start a new attempt
-            $attemptmax = $sco->maxattempt;
-            if ($attemptmax == 0 || ($attemptnumber < $attemptmax)) {
-
-				// Can start new attempt
-				if (!$sco->lock_attempts_after_success || $trackdata->status != 'passed') {
-					$action = 'newattempt';
-					$playerurl .= '&attempt=' . ($attemptnumber + 1);
-					$html .= '<a href="' . $playerurl . '" class="btn btn-primary" role="button">' . get_string("newattempt", "scormlite") . '</a>';
-				}
+            // Review mode.
+            if ($reviewMode && has_capability('mod/scormlite:reviewmycontent', context_module::instance($cm->id))) {
+                $action = 'review';
+                $attempt = scormlite_get_relevant_attempt($sco->id, $userid);
+                $playerurl .= '&attempt='.$attempt;
+                $html .= '<a href="'.$playerurl.'" class="btn btn-primary" role="button">'.get_string("review", "scormlite").'</a>&nbsp;&nbsp;&nbsp;';
             }
-		}
-	} else if ($trackdata->status == 'notattempted' && $scormopen) {
+
+            // Start a new attempt.
+            if (scormlite_has_new_attempt($sco, $trackdata, $attemptnumber)) {
+                $action = 'newattempt';
+                $playerurl .= '&attempt=' . ($attemptnumber + 1);
+                $html .= '<a href="' . $playerurl . '" class="btn btn-primary" role="button">' . get_string("newattempt", "scormlite") . '</a>';
+            }
+        }
+
+    } else if ($trackdata->status == 'notattempted' && $scormopen) {
 		// Can start
 		$action = 'start';
         if ($attemptnumber == 0) $playerurl .= '&attempt=1';
