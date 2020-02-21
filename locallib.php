@@ -135,46 +135,44 @@ function scormlite_check_player_permissions($cm, $sco, $userid, $attempt = 1, $b
         print_error('activityiscurrentlyhidden');
     }
     
-    // Different user not allowed without a specific capability.
-    if ($USER->id != $userid && !has_capability('mod/scormlite:reviewothercontent', context_module::instance($cm->id))) {
-        print_error('notallowed', 'scormlite');
-    }
-
     // Determine if the activity is achieved and if we are in review mode.
     require_once($CFG->dirroot.'/mod/scormlite/report/reportlib.php');
     $achieved = false;
     $reviewmode = false;
+    $superReviewmode = false;
     if ($trackdata = scormlite_get_tracks($sco->id, $userid, $attempt)) {
         $achieved = ($trackdata->status == 'passed' || $trackdata->status == 'failed');
         $reviewmode = $achieved && scormlite_has_review_access($sco, $trackdata);
+        $superReviewmode = $achieved && has_capability('mod/scormlite:reviewothercontent', context_module::instance($cm->id));
     }
 
-    // Playing be others is allowed only in review mode.
-    if ($userid != $USER->id && !$reviewmode) {
-        print_error('notallowed', 'scormlite');
+    // Review not allowed.
+    if ($achieved && !$reviewmode && !$superReviewmode) {
+        scormlite_print_error(get_string('notallowed_review', 'scormlite'), $backhtml, $header, $cm, $activity, $course);
     }
 
-    // Playing when achieved is allowed only in review mode.
-    if ($achieved && !$reviewmode) {
-        scormlite_print_error(get_string('accessdenied', 'scormlite'), $backhtml, $header, $cm, $activity, $course);
+    // Review other not allowed.
+    if ($userid != $USER->id && !$superReviewmode) {
+        print_error('notallowed_reviewother', 'scormlite');
     }
+
+    $superAccess = has_capability('mod/scormlite:viewotherreport', context_module::instance($cm->id));
 
     // Check if we reached the max attempt.
-    $illimitedAccess = has_capability('mod/scormlite:viewotherreport', context_module::instance($cm->id));
-    if ($sco->maxattempt != 0 && $attempt > $sco->maxattempt && !$illimitedAccess) {
-        print_error('notallowed', 'scormlite');
+    if ($sco->maxattempt != 0 && $attempt > $sco->maxattempt && !$superAccess) {
+        print_error('notallowed_maxattempt', 'scormlite');
     }
         
     // Check if SCORM access has been closed.
     list($html, $scormopen) = scormlite_get_availability($cm, $sco, $trackdata); 
-    if (!$scormopen && !$reviewmode && !$illimitedAccess) {
+    if (!$scormopen && !$reviewmode && !$superReviewmode && !$superAccess) {
         echo $html;
         die;
     }
 
-    // Safe Exam.
+    // Safe Exam except for review.
     require_once($CFG->dirroot.'/mod/scormlite/safeexam.php');
-    if (!scormlite_safeexam_check($sco) && !$reviewmode) {
+    if (!scormlite_safeexam_check($sco) && !$reviewmode && !$superReviewmode) {
         print_error('safeexam_warning', 'scormlite');
     }
 

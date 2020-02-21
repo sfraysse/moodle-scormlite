@@ -165,6 +165,9 @@ Please, don't navigate in this window before closing the content window.
 
 $string['recovery'] = 'The previous session of this content has abnormally stopped and will be restored.';
 $string['notallowed'] = 'You are not allowed to do this!';
+$string['notallowed_review'] = 'You are not allowed to review this content now!';
+$string['notallowed_reviewother'] = 'You are not allowed to review content from others!';
+$string['notallowed_maxattempt'] = 'You reached the maximum number of attempts!';
 $string['accessdenied'] = 'You are not allowed to access this content!';
 $string['exitactivity'] = 'Exit activity';
 $string['exitcontent'] = 'Exit content';

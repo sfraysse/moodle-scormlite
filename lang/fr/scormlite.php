@@ -166,6 +166,9 @@ Merci de ne pas naviguer depuis cette page tant que la fenêtre du contenu est o
 ";
 $string['recovery'] = 'La dernière session de ce contenu s\'est finie anormalement et va être restaurée.';
 $string['notallowed'] = 'Vous n\'êtes pas autorisé à faire cela !';
+$string['notallowed_review'] = "Vous n'êtes pas autorisé à voir la correction maintenant !";
+$string['notallowed_reviewother'] = "Vous n'êtes pas autorisé à voir la correction des autres !";
+$string['notallowed_maxattempt'] = "Vous avez dépassé le nombre maximum d'essais !";
 $string['accessdenied'] = 'Vous n\'êtes pas autorisé à consulter ce contenu !';
 $string['exitactivity'] = 'Sortir de l\'activité';
 $string['exitcontent'] = 'Sortir du contenu';

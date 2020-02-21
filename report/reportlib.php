@@ -417,7 +417,7 @@ function scormlite_print_availability($cm, $sco, $trackdata, $available = true) 
 function scormlite_get_availability($cm, $sco, $trackdata, $available = true) {
 	$html = '';
 	$achieved = $trackdata && ($trackdata->status == 'passed' || $trackdata->status == 'failed');
-	$reviewmode = $achieved && ($sco->manualopen == 2 || ($sco->manualopen == 0 && time() > $sco->timeclose));
+	$reviewmode = $achieved && scormlite_has_review_access($sco, $trackdata);
 	$scormopen = true;
 	if ($sco->manualopen == 3) {
 		// Check auto open
@@ -459,44 +459,6 @@ function scormlite_get_availability($cm, $sco, $trackdata, $available = true) {
 	}
 	return array($html, $scormopen);
 }
-
-// Get a SCO review access. 
-// Immediate_review is tested for backward compatibility.
-
-function scormlite_get_review_access($sco)
-{
-	return $sco->immediate_review ? $sco->immediate_review : $sco->review_access;
-}
-
-// Check if a user has a review early access
-
-function scormlite_has_early_review_access($sco, $trackdata)
-{
-	$review_access = scormlite_get_review_access($sco);
-	if (!$review_access) return false;
-	if ($review_access == 1) return true;
-	return $trackdata->status == 'passed' || $trackdata->attemptnb == $sco->maxattempt;
-}
-
-// Check if a user has a review access
-
-function scormlite_has_review_access($sco, $trackdata)
-{
-	if (scormlite_has_early_review_access($sco, $trackdata)) return true;
-	return $sco->manualopen == 2 || ($sco->manualopen == 0 && time() > $sco->timeclose);
-}
-
-// Check if a user can run a new attempt
-
-function scormlite_has_new_attempt($sco, $trackdata, $attemptnumber)
-{
-    $achieved = ($trackdata->status == 'passed' || $trackdata->status == 'failed');
-    $stillOpen = $sco->manualopen == 1 || ($sco->manualopen == 0 && time() <= $sco->timeclose);
-    $newAttemptAllowed = $sco->maxattempt == 0 || ($attemptnumber < $sco->maxattempt);
-    $lockedAfterSuccess = $trackdata->status == 'passed' && $sco->lock_attempts_after_success;
-    return $achieved && $stillOpen && $newAttemptAllowed && !$lockedAfterSuccess;
-}
-
 
 // Print possible actions (or nothing if not available)
 
@@ -596,6 +558,44 @@ function scormlite_get_myactions($cm, $sco, $trackdata, $scormopen = true, $back
 
     return array($html, $action);
 }
+
+// Get a SCO review access. 
+// Immediate_review is tested for backward compatibility.
+
+function scormlite_get_review_access($sco)
+{
+	return $sco->immediate_review ? $sco->immediate_review : $sco->review_access;
+}
+
+// Check if a user has a review early access
+
+function scormlite_has_early_review_access($sco, $trackdata)
+{
+	$review_access = scormlite_get_review_access($sco);
+	if (!$review_access) return false;
+	if ($review_access == 1) return true;
+	return $trackdata->status == 'passed' || $trackdata->attemptnb == $sco->maxattempt;
+}
+
+// Check if a user has a review access
+
+function scormlite_has_review_access($sco, $trackdata)
+{
+	if (scormlite_has_early_review_access($sco, $trackdata)) return true;
+	return $sco->manualopen == 2 || ($sco->manualopen == 0 && time() > $sco->timeclose);
+}
+
+// Check if a user can run a new attempt
+
+function scormlite_has_new_attempt($sco, $trackdata, $attemptnumber)
+{
+    $achieved = ($trackdata->status == 'passed' || $trackdata->status == 'failed');
+    $stillOpen = $sco->manualopen == 1 || ($sco->manualopen == 0 && time() <= $sco->timeclose);
+    $newAttemptAllowed = $sco->maxattempt == 0 || ($attemptnumber < $sco->maxattempt);
+    $lockedAfterSuccess = $trackdata->status == 'passed' && $sco->lock_attempts_after_success;
+    return $achieved && $stillOpen && $newAttemptAllowed && !$lockedAfterSuccess;
+}
+
 
 // Print the report export buttons
 
