@@ -147,6 +147,11 @@ class mod_scormlite_mod_form extends moodleform_mod {
         $mform->addHelpButton('quetzal_statistics', 'quetzal_statistics_access', 'scormlite');
 		$mform->setAdvanced('quetzal_statistics', 1);
 
+		// Security: use safe exam browser
+		$mform->addElement('selectyesno', 'safeexam', get_string('safeexam', 'scormlite'));
+		$mform->setDefault('safeexam', false);
+        $mform->setAdvanced('safeexam', 1);
+
 		
 		//-------------------------------------------------------------------------------
 		// Colors

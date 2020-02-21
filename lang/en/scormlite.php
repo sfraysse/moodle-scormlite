@@ -81,6 +81,8 @@ $string['displayclosebuttondesc'] = 'Display close button to the top left of the
 $string['displaychrono'] = 'Display chronometer';
 $string['displaychronodesc'] = 'Display a chronomoter inside the content. This setting works only if the imported content has been designed for.';
 $string['displaychrono_help'] = $string['displaychronodesc'];
+$string['safeexam'] = 'Use Safe Exam Browser';
+$string['safeexam_warning'] = "This activity requires Safe Exam Browser!";
 // Attempts
 $string['maximumattempts'] = 'Number of attempts';
 $string['maximumattempts_help'] = 'This setting enables the number of attempts to be restricted.';

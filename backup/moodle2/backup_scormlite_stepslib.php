@@ -35,7 +35,7 @@ class backup_scormlite_activity_structure_step extends backup_activity_structure
 		$scoes = new backup_nested_element('scoes');
 		$sco = new backup_nested_element('sco', array('id'), array(
 			'containertype', 'scormtype', 'reference', 'sha1hash', 'md5hash', 'revision', 'timeopen', 'timeclose',
-			'manualopen', 'maxtime', 'passingscore', 'displaychrono', 'colors', 'popup', 'maxattempt', 'whatgrade',
+			'manualopen', 'maxtime', 'passingscore', 'displaychrono', 'safeexam', 'colors', 'popup', 'maxattempt', 'whatgrade',
 			'lock_attempts_after_success', 'launchfile', 'immediate_review', 'review_access', 'quetzal_statistics'));
 
 		$scotracks = new backup_nested_element('scoes_tracks');

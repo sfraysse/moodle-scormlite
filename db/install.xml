@@ -38,8 +38,9 @@
         <FIELD NAME="manualopen" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="timeclose" NEXT="maxtime"/>
         <FIELD NAME="maxtime" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="manualopen" NEXT="passingscore"/>
         <FIELD NAME="passingscore" TYPE="int" LENGTH="2" NOTNULL="true" UNSIGNED="true" DEFAULT="50" SEQUENCE="false" PREVIOUS="maxtime" NEXT="displaychrono"/>
-        <FIELD NAME="displaychrono" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="true" DEFAULT="1" SEQUENCE="false" PREVIOUS="passingscore" NEXT="colors"/>
-        <FIELD NAME="colors" TYPE="text" LENGTH="big" NOTNULL="true" SEQUENCE="false" PREVIOUS="displaychrono" NEXT="popup"/>
+        <FIELD NAME="displaychrono" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="true" DEFAULT="1" SEQUENCE="false" PREVIOUS="passingscore" NEXT="safeexam"/>
+        <FIELD NAME="safeexam" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="displaychrono" NEXT="colors"/>
+        <FIELD NAME="colors" TYPE="text" LENGTH="big" NOTNULL="true" SEQUENCE="false" PREVIOUS="safeexam" NEXT="popup"/>
         <FIELD NAME="popup" TYPE="int" LENGTH="1" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="colors" NEXT="maxattempt"/>
         <FIELD NAME="maxattempt" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="1" SEQUENCE="false" PREVIOUS="popup" NEXT="whatgrade"/>
         <FIELD NAME="whatgrade" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="maxattempt" NEXT="lock_attempts_after_success"/>

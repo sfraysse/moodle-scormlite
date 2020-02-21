@@ -172,6 +172,12 @@ function scormlite_check_player_permissions($cm, $sco, $userid, $attempt = 1, $b
         die;
     }
 
+    // Safe Exam.
+    require_once($CFG->dirroot.'/mod/scormlite/safeexam.php');
+    if (!scormlite_safeexam_check($sco) && !$reviewmode) {
+        print_error('safeexam_warning', 'scormlite');
+    }
+
     return true;
 }
 

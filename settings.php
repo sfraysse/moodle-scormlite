@@ -65,9 +65,6 @@ if ($ADMIN->fulltree) {
     // Reports: display Quetzal statistics
     $settings->add(new admin_setting_configcheckbox('scormlite/quetzal_statistics', get_string('quetzal_statistics_access', 'scormlite'), get_string('quetzal_statistics_access_help','scormlite'), 0));
 	
-    
-    // KD2015 - Version 2.6.3 - Debug functions
-    
     // Debug functions: proctec from session timout
     $settings->add(new admin_setting_configcheckbox('scormlite/protecttimeout', get_string('protecttimeout', 'scormlite'), get_string('protecttimeoutdesc','scormlite'), 0));
 	

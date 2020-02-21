@@ -81,6 +81,8 @@ $string['displayclosebuttondesc'] = 'Affiche un bouton "fermer" en haut à gauch
 $string['displaychrono'] = 'Afficher le chronomètre';
 $string['displaychronodesc'] = 'Afficher un chronomètre dans le contenu. Le contenu importé doit avoir été conçu pour supporter ce paramètre.';
 $string['displaychrono_help'] = $string['displaychronodesc'];
+$string['safeexam'] = 'Utiliser Safe Exam Browser';
+$string['safeexam_warning'] = "Cette activité nécessite l'utilisation de Safe Exam Browser !";
 // Attempts
 $string['maximumattempts'] = 'Nombre de tentatives';
 $string['maximumattempts_help'] = 'Ce paramètre permet de limiter le nombre de tentatives.';
