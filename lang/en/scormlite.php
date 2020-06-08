@@ -182,7 +182,7 @@ $string['action'] = 'Action';
 $string['groupaverage'] = 'Average score for all students of the group';
 $string['noreportdata'] = 'There is no data to report.';
 
-$string['nogroupingdata'] = 'There is no group in this course.';
+$string['nogroupingdata'] = 'There is no group for this report.';
 $string['nousergroupingdata'] = 'There is no group assigned to this user: {$a}.';
 $string['noactivitygrouping'] = 'There is no group assigned to this activity.';
 $string['selectgrouping'] = 'Please, select a group to display this report.';

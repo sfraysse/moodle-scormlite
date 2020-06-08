@@ -181,7 +181,7 @@ function scormlite_print_activity_grouping($cm, $activity, $link = null) {
 	if (intval($cm->groupingid) != null) scormlite_print_grouping($cm->groupingid, $link);
 }
 
-function scormlite_print_usergroup_box($courseid, $groupings = null, $groupingid = null, $userid = null, $strtitle = '', $prestr1 = '', $prestr2 = '', $poststr = '', $select = true, $display = true) {
+function scormlite_print_usergroup_box($courseid, $groupings = null, $groupingid = null, $cmid = null, $stepid = null, $userid = null, $strtitle = '', $prestr1 = '', $prestr2 = '', $poststr = '', $select = true, $display = true) {
 	global $OUTPUT, $DB;
 	// If one grouping, select it
 	if (count($groupings) == 1) {
@@ -210,7 +210,7 @@ function scormlite_print_usergroup_box($courseid, $groupings = null, $groupingid
 	if (count($groupings) == 1 || $select == false) {
 		echo $prestr1.get_string('groupresults', 'scormlite', $groupings[$groupingid]->name).$poststr;
 	} else {
-		scormlite_print_groupings_selectform($courseid, $groupings, $groupingid, $userid, $prestr2, $poststr);
+		scormlite_print_groupings_selectform($courseid, $groupings, $groupingid, $cmid, $stepid, $userid, $prestr2, $poststr);
 	}
 	if (empty($groupingid)) {
 		echo '<p>'.get_string('selectgrouping', 'scormlite').'</p>';
@@ -223,7 +223,7 @@ function scormlite_print_usergroup_box($courseid, $groupings = null, $groupingid
 	return $groupingid;
 }
 
-function scormlite_print_groupings_selectform($courseid, $groupings, $groupingid = null, $userid = null, $prestr = '', $poststr = '') {
+function scormlite_print_groupings_selectform($courseid, $groupings, $groupingid = null, $cmid = null, $stepid = null, $userid = null, $prestr = '', $poststr = '') {
 	// Combo
 	$select_grouping_html = '<select name="groupingid" onchange="document.getElementById(\'choose_grouping_form\').submit()">';
 	if (empty($groupingid)) $select_grouping_html .=  '<option value="" selected="selected">'.get_string("select", "scormlite").'</option>';
@@ -239,6 +239,8 @@ function scormlite_print_groupings_selectform($courseid, $groupings, $groupingid
 		<form method="GET" id="choose_grouping_form" autocomplete="off">
 			'.$select_grouping_html.'
 			<input name="courseid" type="hidden" value="'.$courseid.'" />
+			<input name="id" type="hidden" value="'.$cmid.'" />
+			<input name="stepid" type="hidden" value="'.$stepid.'" />
 			<input name="userid" type="hidden" value="'.$userid.'" />
 			<input id="submit_grouping" class="btn btn-default" type="submit" />
 		</form>
@@ -646,14 +648,6 @@ function scormlite_report_get_user_groupings($courseid, $userid, $activitytype =
 	return $res;
 }
 
-// KD2015-31 - End of "group members only" option
-// Get the groups found in the access conditions of an activity
-
-function scormlite_report_get_activity_group($cmid) {
-    $groups = scormlite_report_get_activity_groups($cmid);
-    if (!empty($groups)) return $groups[0];
-    return null;
-}
 function scormlite_report_get_activity_groups($cmid) {
 	global $DB;
     $availability_record = $DB->get_record('course_modules', array('id' => $cmid));
@@ -664,7 +658,7 @@ function scormlite_report_get_activity_groups($cmid) {
     $groupids = array();
     scormlite_report_get_activity_groups_collect($groupids, $json);
     foreach ($groupids as $groupid) {
-        $groups[] = $DB->get_record('groups', array('id'=>$groupid));
+        $groups[$groupid] = $DB->get_record('groups', array('id'=>$groupid));
     }
 	return $groups;
 }
@@ -773,8 +767,13 @@ function scormlite_report_populate_activities(&$activities, $courseid, $grouping
     // Keep only activities associated with group $groupingid
     $records = array();
 	foreach ($records_all as $record_all) {
-        $grouping = scormlite_report_get_activity_group($record_all->cmid);
-        if (!is_null($grouping) && $grouping->id == $groupingid) $records[] = $record_all;
+		$groups = scormlite_report_get_activity_groups($record_all->cmid);
+		$groupsids = array_map(function ($group) {
+			return $group->id;
+		}, $groups);
+		if (in_array($groupingid, $groupsids)) {
+			$records[] = $record_all;
+		}
     }
     
 	$scoids = array();
