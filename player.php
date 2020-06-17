@@ -54,6 +54,11 @@ $PAGE->set_url($url);
 $backhtml = '<input type="button" class="btn btn-primary" value="'.get_string('continue').'" onClick="location.href=\''.$backurl.'\'"/>';
 scormlite_check_player_permissions($cm, $sco, $userid, $attempt, $backhtml, true, $activity, $course);
 
+// Safe Exam.
+require_once($CFG->dirroot.'/mod/scormlite/safeexam.php');
+scormlite_safeexam_secure_layout($sco);
+
+
 //
 // Print the page
 //
@@ -87,11 +92,13 @@ $backurl = urlencode($backurl);
 				echo "<script type=\"text/javascript\">scormlite_resize('100%', '100%');</script>\n";
 				$fullurl = "loadSCO.php?id=".$cm->id.$scoidstr."&userid=".$userid."&attempt=".$attempt."&backurl=".$backurl;
 
-				// SF2018 - Add a close button
-				$containerConfig = get_config($sco->containertype);
-				if (!isset($containerConfig->displayclosebutton) || $containerConfig->displayclosebutton) {
-					$unload_url = (new moodle_url('/mod/scormlite/empty.php'))->out();
-					echo "<button onclick=\"document.getElementById('scoframe1').src = '" . $unload_url . "';\" class='btn btn-primary btn-sm' style='margin-bottom:10px;'>" . get_string('manualopenclose', 'scormlite') . "</button>\n";
+				// Add a close button
+				if (!scormlite_safeexam_required($sco)) {
+					$containerConfig = get_config($sco->containertype);
+					if (!isset($containerConfig->displayclosebutton) || $containerConfig->displayclosebutton) {
+						$unload_url = (new moodle_url('/mod/scormlite/exit.php', ['backurl' => $backurl]))->out();
+						echo "<button onclick=\"document.getElementById('scoframe1').src = '" . $unload_url . "';\" class='btn btn-primary btn-sm' style='margin-bottom:10px;'>" . get_string('manualopenclose', 'scormlite') . "</button>\n";
+					}
 				}
 
 				echo "<iframe id=\"scoframe1\" class=\"scoframe\" name=\"scoframe1\" src=\"{$fullurl}\"></iframe>\n";

@@ -18,22 +18,21 @@ namespace mod_scormlite\event;
 
 defined('MOODLE_INTERNAL') || die();
 
-class course_module_viewed extends \core\event\course_module_viewed {
+class attempt_initialized extends sco_event {
 
     /**
-     * Init method.
+     * Return localised event name.
      */
-    protected function init() {
-        $this->data['objecttable'] = 'scormlite';
-        $this->data['crud'] = 'r';
-        $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
+    public static function get_name() {
+        return get_string('event:attempt_initialized', 'scormlite');
     }
 
     /**
-     * Get object ID mapping.
+     * Returns description of what happened.
      */
-    public static function get_objectid_mapping() {
-        return array('db' => 'scormlite', 'restore' => 'scormlite');
+    public function get_description()  {
+        return "The user with id '$this->userid' initialized the SCORM content of the '{$this->objecttable}' activity with the course module id '$this->contextinstanceid'.";
     }
+
 }
 

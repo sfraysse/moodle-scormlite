@@ -136,6 +136,13 @@ function SCORMapi1_3() {
 
 
     //
+    // Internal timer initialization
+    //
+	
+    var InitializeTime = false;
+
+
+    //
     // API Methods definition
     //
 
@@ -153,7 +160,8 @@ function SCORMapi1_3() {
                 result = ('true' == AJAXResult) ? 'true' : 'false';
                 errorCode = ('true' == result)? '0' : '101'; // General exception for any AJAX fault
                 if ('true' == result) {
-					Initialized = true;
+                    Initialized = true;
+                    InitializeTime = new Date().getTime();
 					errorCode = "0";
 					coockiesAllowed = CheckCoockies();
 					//alert("Init. Coockies: "+coockiesAllowed);
@@ -185,7 +193,7 @@ function SCORMapi1_3() {
         if (param == "") {
             if ((Initialized) && (!Terminated)) {
 				StoreLocalData(cmi);
-                var AJAXResult = StoreData(cmi,true);
+                var AJAXResult = StoreData(cmi,true,true);
                 result = ('true' == AJAXResult) ? 'true' : 'false';
                 errorCode = ('true' == result)? '0' : '101'; // General exception for any AJAX fault
                 if ('true' == result) {
@@ -416,7 +424,7 @@ function SCORMapi1_3() {
 			datastring += CollectCustomData(customdata);
 
 			// Add a few params
-			datastring = "id=<?php p($id) ?>&scoid=<?php p($scoid) ?>&userid=<?php p($userid) ?>&sesskey=<?php echo sesskey() ?>"+datastring;
+			datastring = "id=<?php p($id) ?>&scoid=<?php p($scoid) ?>&userid=<?php p($userid) ?>&sesskey=<?php echo sesskey() ?>&sessionid=<?php echo $sessionid ?>"+datastring;
 
 			// Coockie
 			name = "scormlite<?php p($scoid) ?>u<?php p($userid) ?>";
@@ -460,7 +468,7 @@ function SCORMapi1_3() {
 		
 		// Local time update
 		cmi.total_time = AddTime(cmi.total_time, cmi.session_time);
-		cmi.session_time = "PT0S";
+		cmi.session_time = "PT0H0M0S";
 
 		// HTTP commit with record of the total time
 		//alert("Restore and record HTTP");
@@ -468,7 +476,7 @@ function SCORMapi1_3() {
 	}
 	
     function CheckAccess() {
-		var datastring = "id=<?php p($id) ?>&scoid=<?php p($scoid) ?>&userid=<?php p($userid) ?>&attempt=<?php p($attempt) ?>&sesskey=<?php echo sesskey() ?>";
+		var datastring = "id=<?php p($id) ?>&scoid=<?php p($scoid) ?>&userid=<?php p($userid) ?>&attempt=<?php p($attempt) ?>&sesskey=<?php echo sesskey() ?>&sessionid=<?php echo $sessionid ?>";
 		var myRequest = NewHttpReq();
 		var result = DoRequest(myRequest,"<?php p($CFG->wwwroot) ?>/mod/scormlite/checkaccess.php",datastring);
 		var results = String(result).split('\n');
@@ -476,44 +484,45 @@ function SCORMapi1_3() {
 		return results[0];
     }
 
-    function StoreData(data, updateTime) {
-        var datastring = '';
-		
+    function StoreData(data, updateTime, terminate) {
+
+        // Common params
+        var datastring = "id=<?php p($id) ?>&scoid=<?php p($scoid) ?>&userid=<?php p($userid) ?>&attempt=<?php p($attempt) ?>&sesskey=<?php echo sesskey() ?>&sessionid=<?php echo $sessionid ?>";
+			
+        // Total time: updated on terminate and restore.
+        if (updateTime) {
+            datastring += TotalTime();
+        }
+
+        // Terminate.
+        if (terminate) {
+            datastring += TerminateTime();
+        }
+
+        // Curent time: always send
+        datastring += CurrentTime();
+
         if (cmi.mode == 'normal') {
 		
-			// The content is responsible for calculating the completion_status because it may take into accound other criterias than the completion_threshold (e.g. explicit completion by user).
-			// The content is responsible for calculating the success_status because it may take into accound other criterias than the scaled_passing_score (e.g. waiting for full completion).
-
-			// Total time is updated only when terminating, not when commiting.
-	        if (updateTime) {
-				datastring += TotalTime();
-			}
-
 			// Collect standard data to store (only cmi)
 			datastring += CollectData(data,'cmi');
 			
 			// Collect custom data to store
 			datastring += CollectCustomData(customdata);
 
-			// Add a few params
-			datastring = "id=<?php p($id) ?>&scoid=<?php p($scoid) ?>&userid=<?php p($userid) ?>&attempt=<?php p($attempt) ?>&sesskey=<?php echo sesskey() ?>"+datastring;
-			
-			// HTTP request
-			//alert("HTTP request");
-			var myRequest = NewHttpReq();
-			var result = DoRequest(myRequest,"<?php p($CFG->wwwroot) ?>/mod/scormlite/datamodel.php",datastring);
-			var results = String(result).split('\n');
-					
-			// Error code
-			errorCode = results[1];
-			
-			// True vs False
-			return results[0];
         }
-		
-		// Other mode (incl Review mode) should not alter tracking data.
-        errorCode = "0";
-		return "true";
+
+        // HTTP request
+        //alert("HTTP request");
+        var myRequest = NewHttpReq();
+        var result = DoRequest(myRequest,"<?php p($CFG->wwwroot) ?>/mod/scormlite/datamodel.php",datastring);
+        var results = String(result).split('\n');
+                
+        // Error code
+        errorCode = results[1];
+        
+        // True vs False
+        return results[0];
     }
 
     function CollectData(data,parent) {
@@ -627,6 +636,66 @@ function SCORMapi1_3() {
     function TotalTime() {
         var total_time = AddTime(cmi.total_time, cmi.session_time);
         return '&'+underscore('cmi.total_time')+'='+encodeURIComponent(total_time);
+    }
+
+    function CurrentTime() {
+        var current_time = AddTime(cmi.total_time, cmi.session_time);
+        return '&'+underscore('current_time')+'='+encodeURIComponent(current_time);
+    }
+
+    function TerminateTime() {
+        var seconds = (new Date().getTime() - InitializeTime) / 1000 ;
+        var terminate_time = SecondsToTime(seconds);
+        return '&'+underscore('terminate_time')+'='+encodeURIComponent(terminate_time);
+    }
+
+    function SecondsToTime(ts) {
+        var sec = (ts % 60);
+
+        ts -= sec;
+        var tmp = (ts % 3600);  //# of seconds in the total # of minutes
+        ts -= tmp;              //# of seconds in the total # of hours
+
+        // convert seconds to conform to CMITimespan type (e.g. SS.00)
+        sec = Math.round(sec*100)/100;
+
+        var strSec = new String(sec);
+        var strWholeSec = strSec;
+        var strFractionSec = "";
+
+        if (strSec.indexOf(".") != -1)
+        {
+            strWholeSec =  strSec.substring(0, strSec.indexOf("."));
+            strFractionSec = strSec.substring(strSec.indexOf(".")+1, strSec.length);
+        }
+
+        if (strWholeSec.length < 2)
+        {
+            strWholeSec = "0" + strWholeSec;
+        }
+        strSec = strWholeSec;
+
+        if (strFractionSec.length)
+        {
+            strSec = strSec+ "." + strFractionSec;
+        }
+
+
+        if ((ts % 3600) != 0 )
+            var hour = 0;
+        else var hour = (ts / 3600);
+        if ( (tmp % 60) != 0 )
+            var min = 0;
+        else var min = (tmp / 60);
+
+        if ((new String(hour)).length < 2)
+            hour = "0"+hour;
+        if ((new String(min)).length < 2)
+            min = "0"+min;
+
+        var rtnVal = "PT"+hour+"H"+min+"M"+strSec+"S";
+
+        return rtnVal;
     }
 
 

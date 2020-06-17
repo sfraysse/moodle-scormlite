@@ -155,6 +155,20 @@ function xmldb_scormlite_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2018050801, 'scormlite');
     }
     
+    /* Adding column 'safeexam' to scormlite_scoes table */
+
+    if ($oldversion < 2018050806 || $oldversion == 2018112800 || $oldversion == 2018112801) {
+
+        $table = new xmldb_table('scormlite_scoes');
+
+        $field = new xmldb_field('safeexam', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        upgrade_mod_savepoint(true, 2018050806, 'scormlite');
+    }
+    
 	return true;
 }
 

@@ -181,7 +181,7 @@ function scormlite_print_activity_grouping($cm, $activity, $link = null) {
 	if (intval($cm->groupingid) != null) scormlite_print_grouping($cm->groupingid, $link);
 }
 
-function scormlite_print_usergroup_box($courseid, $groupings = null, $groupingid = null, $userid = null, $strtitle = '', $prestr1 = '', $prestr2 = '', $poststr = '', $select = true, $display = true) {
+function scormlite_print_usergroup_box($courseid, $groupings = null, $groupingid = null, $cmid = null, $stepid = null, $userid = null, $strtitle = '', $prestr1 = '', $prestr2 = '', $poststr = '', $select = true, $display = true) {
 	global $OUTPUT, $DB;
 	// If one grouping, select it
 	if (count($groupings) == 1) {
@@ -210,7 +210,7 @@ function scormlite_print_usergroup_box($courseid, $groupings = null, $groupingid
 	if (count($groupings) == 1 || $select == false) {
 		echo $prestr1.get_string('groupresults', 'scormlite', $groupings[$groupingid]->name).$poststr;
 	} else {
-		scormlite_print_groupings_selectform($courseid, $groupings, $groupingid, $userid, $prestr2, $poststr);
+		scormlite_print_groupings_selectform($courseid, $groupings, $groupingid, $cmid, $stepid, $userid, $prestr2, $poststr);
 	}
 	if (empty($groupingid)) {
 		echo '<p>'.get_string('selectgrouping', 'scormlite').'</p>';
@@ -223,7 +223,7 @@ function scormlite_print_usergroup_box($courseid, $groupings = null, $groupingid
 	return $groupingid;
 }
 
-function scormlite_print_groupings_selectform($courseid, $groupings, $groupingid = null, $userid = null, $prestr = '', $poststr = '') {
+function scormlite_print_groupings_selectform($courseid, $groupings, $groupingid = null, $cmid = null, $stepid = null, $userid = null, $prestr = '', $poststr = '') {
 	// Combo
 	$select_grouping_html = '<select name="groupingid" onchange="document.getElementById(\'choose_grouping_form\').submit()">';
 	if (empty($groupingid)) $select_grouping_html .=  '<option value="" selected="selected">'.get_string("select", "scormlite").'</option>';
@@ -239,6 +239,8 @@ function scormlite_print_groupings_selectform($courseid, $groupings, $groupingid
 		<form method="GET" id="choose_grouping_form" autocomplete="off">
 			'.$select_grouping_html.'
 			<input name="courseid" type="hidden" value="'.$courseid.'" />
+			<input name="id" type="hidden" value="'.$cmid.'" />
+			<input name="stepid" type="hidden" value="'.$stepid.'" />
 			<input name="userid" type="hidden" value="'.$userid.'" />
 			<input id="submit_grouping" class="btn btn-default" type="submit" />
 		</form>
@@ -417,7 +419,7 @@ function scormlite_print_availability($cm, $sco, $trackdata, $available = true) 
 function scormlite_get_availability($cm, $sco, $trackdata, $available = true) {
 	$html = '';
 	$achieved = $trackdata && ($trackdata->status == 'passed' || $trackdata->status == 'failed');
-	$reviewmode = $achieved && ($sco->manualopen == 2 || ($sco->manualopen == 0 && time() > $sco->timeclose));
+	$reviewmode = $achieved && scormlite_has_review_access($sco, $trackdata);
 	$scormopen = true;
 	if ($sco->manualopen == 3) {
 		// Check auto open
@@ -460,6 +462,105 @@ function scormlite_get_availability($cm, $sco, $trackdata, $available = true) {
 	return array($html, $scormopen);
 }
 
+// Print possible actions (or nothing if not available)
+
+function scormlite_print_myactions($cm, $sco, $trackdata, $scormopen = true, $backurl = null)
+{
+    $res = scormlite_get_myactions($cm, $sco, $trackdata, $scormopen, $backurl);
+    echo $res[0];
+    return $res[1];
+}
+function scormlite_get_myactions($cm, $sco, $trackdata, $scormopen = true, $backurl = null, $actionDiv = true) {
+    global $USER, $CFG, $OUTPUT;
+
+    // Safe Exam.
+    require_once($CFG->dirroot.'/mod/scormlite/safeexam.php');
+    $sem_check = scormlite_safeexam_check($sco);
+    $sem_warning = scormlite_safeexam_warning($sco);
+    $sem_locked = false;
+
+    $html = '';
+    $userid = $USER->id;
+    $playerurl = new moodle_url('/mod/scormlite/player.php', array('scoid' => $sco->id, 'backurl'=>$backurl));
+    $achieved = ($trackdata->status == 'passed' || $trackdata->status == 'failed');
+    $reviewMode = $achieved && scormlite_has_review_access($sco, $trackdata);
+    $attemptnumber = scormlite_get_attempt_count($sco->id, $userid);
+    $action = '';
+    if ($achieved) {
+        if (!isloggedin() || isguestuser()) {
+
+            // Can be played by guests
+            $action = 'start';
+            $playerurl .= '&attempt=1';
+            $html .= '<a href="'.$playerurl.'" class="btn btn-primary" role="button">'.get_string("start", "scormlite").'</a>';
+
+        } else {
+
+            // Review mode.
+            if ($reviewMode && has_capability('mod/scormlite:reviewmycontent', context_module::instance($cm->id))) {
+                $action = 'review';
+                $attempt = scormlite_get_relevant_attempt($sco->id, $userid);
+                $playerurl .= '&attempt='.$attempt;
+                $html .= '<a href="'.$playerurl.'" class="btn btn-primary" role="button">'.get_string("review", "scormlite").'</a>&nbsp;&nbsp;&nbsp;';
+            }
+
+            // Start a new attempt.
+            if (scormlite_has_new_attempt($sco, $trackdata, $attemptnumber)) {
+                if ($sem_check) {
+                    $action = 'newattempt';
+                    $playerurl .= '&attempt=' . ($attemptnumber + 1);
+                    $html .= '<a href="' . $playerurl . '" class="btn btn-primary" role="button">' . get_string("newattempt", "scormlite") . '</a>';
+                } else {
+                    $sem_locked = true;
+                }
+            }
+        }
+
+    } else if ($trackdata->status == 'notattempted' && $scormopen) {
+
+        // Can start
+        if ($sem_check) {
+            $action = 'start';
+            if ($attemptnumber == 0) $playerurl .= '&attempt=1';
+            else $playerurl .= '&attempt='.$attemptnumber;
+            $html .= '<a href="'.$playerurl.'" class="btn btn-primary" role="button">'.get_string("start", "scormlite").'</a>';
+        } else {
+            $sem_locked = true;
+        }
+
+    } else if ($trackdata->status == 'completed' && $trackdata->exit != 'suspend' && $scormopen) {
+
+        // Can restart
+        if ($sem_check) {
+            $action = 'restart';
+            $playerurl .= '&attempt='.$attemptnumber;
+            $html .= '<a href="'.$playerurl.'" class="btn btn-primary" role="button">'.get_string("restart", "scormlite").'</a>';
+        } else {
+            $sem_locked = true;
+        }
+
+    } else if ($scormopen) {
+
+        // Can resume, except if the activity is closed
+        if ($sem_check) {
+            $action = 'resume';
+            $playerurl .= '&attempt='.$attemptnumber;
+            $html .= '<a href="'.$playerurl.'" class="btn btn-primary" role="button">'.get_string("resume", "scormlite").'</a>';
+        } else {
+            $sem_locked = true;
+        }
+    }
+
+    if ($actionDiv) $html = '<div class="actions">'.$html.'</div>'."\n";
+
+    // SEM warning.
+    if (!empty($sem_warning) && $sem_locked) {
+        $html .= '<br>' . $OUTPUT->notification($sem_warning, \core\output\notification::NOTIFY_ERROR);
+    }
+
+    return array($html, $action);
+}
+
 // Get a SCO review access. 
 // Immediate_review is tested for backward compatibility.
 
@@ -486,85 +587,17 @@ function scormlite_has_review_access($sco, $trackdata)
 	return $sco->manualopen == 2 || ($sco->manualopen == 0 && time() > $sco->timeclose);
 }
 
+// Check if a user can run a new attempt
 
-// Print possible actions (or nothing if not available)
-
-function scormlite_print_myactions($cm, $sco, $trackdata, $scormopen = true, $backurl = null)
+function scormlite_has_new_attempt($sco, $trackdata, $attemptnumber)
 {
-	$res = scormlite_get_myactions($cm, $sco, $trackdata, $scormopen, $backurl);
-	echo $res[0];
-	return $res[1];
+    $achieved = ($trackdata->status == 'passed' || $trackdata->status == 'failed');
+    $stillOpen = $sco->manualopen == 1 || ($sco->manualopen == 0 && time() <= $sco->timeclose);
+    $newAttemptAllowed = $sco->maxattempt == 0 || ($attemptnumber < $sco->maxattempt);
+    $lockedAfterSuccess = $trackdata->status == 'passed' && $sco->lock_attempts_after_success;
+    return $achieved && $stillOpen && $newAttemptAllowed && !$lockedAfterSuccess;
 }
-function scormlite_get_myactions($cm, $sco, $trackdata, $scormopen = true, $backurl = null, $actionDiv = true) {
-    global $USER;
-	$html = '';
-	$userid = $USER->id;
-	$playerurl = new moodle_url('/mod/scormlite/player.php', array('scoid' => $sco->id, 'backurl'=>$backurl));
-	$achieved = ($trackdata->status == 'passed' || $trackdata->status == 'failed');
-	$reviewModeOnly = $achieved && ($sco->manualopen == 2 || ($sco->manualopen == 0 && time() > $sco->timeclose));
-	$reviewMode = $achieved && scormlite_has_early_review_access($sco, $trackdata);
-    $attemptnumber = scormlite_get_attempt_count($sco->id, $userid);
-	$action = '';
-	if ($achieved) {
-		if (!isloggedin() || isguestuser()) {
-			
-			// Can be played by guests
-			$action = 'start';
-            $playerurl .= '&attempt=1';
-			$html .= '<a href="'.$playerurl.'" class="btn btn-primary" role="button">'.get_string("start", "scormlite").'</a>';
-			
-		} else if ($reviewModeOnly && has_capability('mod/scormlite:reviewmycontent', context_module::instance($cm->id))) {   // KD2014 - 2.6 compliance
-			
-			// Can be reviewed
-			$action = 'review';
-            $attempt = scormlite_get_relevant_attempt($sco->id, $userid);
-            $playerurl .= '&attempt='.$attempt;
-			$html .= '<a href="'.$playerurl.'" class="btn btn-primary" role="button">'.get_string("review", "scormlite").'</a>';
-			
-        } else {
-			
-			// Review mode
-			if ($reviewMode && has_capability('mod/scormlite:reviewmycontent', context_module::instance($cm->id))) {
 
-				// Can be reviewed
-				$action = 'review';
-				$attempt = scormlite_get_relevant_attempt($sco->id, $userid);
-				$playerurl .= '&attempt='.$attempt;
-				$html .= '<a href="'.$playerurl.'" class="btn btn-primary" role="button">'.get_string("review", "scormlite").'</a>&nbsp;&nbsp;&nbsp;';
-			}
-
-            // Start a new attempt
-            $attemptmax = $sco->maxattempt;
-            if ($attemptmax == 0 || ($attemptnumber < $attemptmax)) {
-
-				// Can start new attempt
-				if (!$sco->lock_attempts_after_success || $trackdata->status != 'passed') {
-					$action = 'newattempt';
-					$playerurl .= '&attempt=' . ($attemptnumber + 1);
-					$html .= '<a href="' . $playerurl . '" class="btn btn-primary" role="button">' . get_string("newattempt", "scormlite") . '</a>';
-				}
-            }
-		}
-	} else if ($trackdata->status == 'notattempted' && $scormopen) {
-		// Can start
-		$action = 'start';
-        if ($attemptnumber == 0) $playerurl .= '&attempt=1';
-        else $playerurl .= '&attempt='.$attemptnumber;
-		$html .= '<a href="'.$playerurl.'" class="btn btn-primary" role="button">'.get_string("start", "scormlite").'</a>';
-	} else if ($trackdata->status == 'completed' && $trackdata->exit != 'suspend' && $scormopen) {
-		// Can restart
-		$action = 'restart';
-        $playerurl .= '&attempt='.$attemptnumber;
-		$html .= '<a href="'.$playerurl.'" class="btn btn-primary" role="button">'.get_string("restart", "scormlite").'</a>';
-	} else if ($scormopen) {
-		// Can resume, except if the activity is closed
-		$action = 'resume';
-        $playerurl .= '&attempt='.$attemptnumber;
-		$html .= '<a href="'.$playerurl.'" class="btn btn-primary" role="button">'.get_string("resume", "scormlite").'</a>';
-	}
-	if ($actionDiv) $html = '<div class="actions">'.$html.'</div>'."\n";
-	return array($html, $action);
-}
 
 // Print the report export buttons
 
@@ -594,16 +627,6 @@ function scormlite_print_exportbuttons($formats, $class = 'mdl-align exportcomma
 
 function scormlite_report_get_course_groupings($courseid, $activitytype = "scormlite") {
 	global $DB;
-
-    // KD2015-31 - End of "group members only" option
-    /*
-	$sql = "
-		SELECT DISTINCT(GI.id), GI.name
-		FROM {groupings} GI
-		INNER JOIN {course_modules} CM ON CM.groupingid=GI.id
-		INNER JOIN {modules} M ON M.id=CM.module
-		WHERE CM.course=$courseid AND M.name='$activitytype'";
-	*/
 	$sql = "
 		SELECT DISTINCT(G.id), G.name
 		FROM {groups} G
@@ -615,25 +638,6 @@ function scormlite_report_get_course_groupings($courseid, $activitytype = "scorm
 
 function scormlite_report_get_user_groupings($courseid, $userid, $activitytype = "scormlite") {
 	global $DB;
-
-    // KD2015-31 - End of "group members only" option
-    /*
-	$res = array();
-	global $DB, $CFG;
-	// User groupings (id=>grouplist)
-	require_once($CFG->libdir.'/grouplib.php');
-	$usergroupings = groups_get_user_groups($courseid, $userid);
-	// Activity groupings (id=>name)
-	$activitygroupings = scormlite_report_get_course_groupings($courseid, $activitytype);
-	// Grouping records
-	foreach ($usergroupings as $groupingid => $grouplist) {
-		if (!empty($groupingid)) {  // Reject 0, which may happen
-			if (array_key_exists($groupingid, $activitygroupings)) { // Keep it
-				$res[$groupingid] = $activitygroupings[$groupingid];
-			}
-		}
-	}
-	*/
 	$sql = "
 		SELECT DISTINCT(G.id), G.name
 		FROM {groups} G
@@ -644,14 +648,6 @@ function scormlite_report_get_user_groupings($courseid, $userid, $activitytype =
 	return $res;
 }
 
-// KD2015-31 - End of "group members only" option
-// Get the groups found in the access conditions of an activity
-
-function scormlite_report_get_activity_group($cmid) {
-    $groups = scormlite_report_get_activity_groups($cmid);
-    if (!empty($groups)) return $groups[0];
-    return null;
-}
 function scormlite_report_get_activity_groups($cmid) {
 	global $DB;
     $availability_record = $DB->get_record('course_modules', array('id' => $cmid));
@@ -662,7 +658,7 @@ function scormlite_report_get_activity_groups($cmid) {
     $groupids = array();
     scormlite_report_get_activity_groups_collect($groupids, $json);
     foreach ($groupids as $groupid) {
-        $groups[] = $DB->get_record('groups', array('id'=>$groupid));
+        $groups[$groupid] = $DB->get_record('groups', array('id'=>$groupid));
     }
 	return $groups;
 }
@@ -681,31 +677,7 @@ function scormlite_report_get_activity_groups_collect(&$groupids, $json) {
 
 function scormlite_report_populate_users(&$users, $courseid, $groupingid) {
 	global $DB;
-
-    // KD2015-31 - End of "group members only" option
-    /*
-	$sql = "
-		SELECT U.id, U.firstname, U.lastname, U.idnumber, U.picture, U.imagealt, U.email, U.firstnamephonetic, U.lastnamephonetic, U.middlename, U.alternatename
-		FROM {user} U
-		INNER JOIN {groups_members} GM ON GM.userid=U.id
-		INNER JOIN {groups} G ON G.id=GM.groupid
-		INNER JOIN {groupings_groups} GIG ON GIG.groupid=G.id
-		INNER JOIN {groupings} GI ON GI.id=GIG.groupingid
-		WHERE GI.id=$groupingid
-	";
-	*/
     if (is_null($groupingid)) return array();
-    /* Alternative (params must be added)
-        // Get users enrolled in the course
-        $courseid = $course->id;
-        $context = context_course::instance($courseid, MUST_EXIST);
-        $records = get_enrolled_users($context);
-        // Keep only users who have access to this activity
-        $modinfo = get_fast_modinfo($course);
-        $cm = $modinfo->get_cm($cm->id);
-        $availability = new \core_availability\info_module($cm);
-        $records = $availability->filter_user_list($records);
-    */
 	$sql = "
 		SELECT U.id, U.firstname, U.lastname, U.idnumber, U.picture, U.imagealt, U.email, U.firstnamephonetic, U.lastnamephonetic, U.middlename, U.alternatename
 		FROM {user} U
@@ -713,7 +685,6 @@ function scormlite_report_populate_users(&$users, $courseid, $groupingid) {
 		INNER JOIN {groups} G ON G.id=GM.groupid
 		WHERE G.id=$groupingid
 	";
-
     
 	$context = context_course::instance($courseid, MUST_EXIST);
 	$records = $DB->get_recordset_sql($sql);
@@ -785,18 +756,6 @@ function scormlite_report_compare_users_by_name($user_record1, $user_record2) {
 function scormlite_report_populate_activities(&$activities, $courseid, $groupingid, $activitytype = "scormtype") {
     
 	global $DB;
-    
-    // KD2015-31 - End of "group members only" option
-    /*
-	$sql = "
-		SELECT A.id, A.code, A.name, A.colors, CM.id AS cmid
-		FROM {assessmentpath} A
-		INNER JOIN {course_modules} CM ON CM.instance=A.id AND CM.course=A.course
-		INNER JOIN {modules} M ON M.id=CM.module
-		INNER JOIN {groupings} GI ON GI.id=CM.groupingid
-		WHERE A.course=$courseid AND M.name='$activitytype' AND GI.id=$groupingid
-	";
-	*/
 	$sql = "
 		SELECT A.id, A.code, A.name, A.colors, CM.id AS cmid
 		FROM {assessmentpath} A
@@ -808,8 +767,13 @@ function scormlite_report_populate_activities(&$activities, $courseid, $grouping
     // Keep only activities associated with group $groupingid
     $records = array();
 	foreach ($records_all as $record_all) {
-        $grouping = scormlite_report_get_activity_group($record_all->cmid);
-        if (!is_null($grouping) && $grouping->id == $groupingid) $records[] = $record_all;
+		$groups = scormlite_report_get_activity_groups($record_all->cmid);
+		$groupsids = array_map(function ($group) {
+			return $group->id;
+		}, $groups);
+		if (in_array($groupingid, $groupsids)) {
+			$records[] = $record_all;
+		}
     }
     
 	$scoids = array();
@@ -1588,8 +1552,8 @@ function scormlite_get_track($tracks, $scoid, $userid, $attempt=null) {
 	// Pre-sets
 	$usertrack->attempt = $attempt;
 	$usertrack->attemptnb = scormlite_get_attempt_count($scoid, $userid);
-	$usertrack->session_time = '00:00:00';
-	$usertrack->total_time = '00:00:00';
+	$usertrack->session_time = 'PT0H0M0S';
+	$usertrack->total_time = 'PT0H0M0S';
 	$usertrack->score_raw = '';
 	$usertrack->score_scaled = '';
 	$usertrack->status = 'notattempted';  // We keep it only for compatibility with legacy code
@@ -1644,7 +1608,7 @@ function scormlite_get_track($tracks, $scoid, $userid, $attempt=null) {
 	if ($usertrack->score_scaled !== '') {	// Scaled in priority
 		$usertrack->score_raw = (float)sprintf('%2.2f', $usertrack->score_scaled) * 100;
 	} else if ($usertrack->score_raw !== '') {
-		$usertrack->score_scaled = (float)sprintf('%1.4f', $usertrack->score_raw) / 100;   // Supposing that min=0 and max=100 (to be improved) !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		$usertrack->score_scaled = (float)sprintf('%1.4f', $usertrack->score_raw / 100);   // Supposing that min=0 and max=100 (to be improved) !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	}
 	// The end
 	if (is_array($usertrack)) {
@@ -1755,10 +1719,14 @@ function scormlite_get_highest_attempt_by_element($scoid, $userid, $element) {
     }
 }
 
-function scormlite_delete_attempts($scoid, $userids) {
-	global $DB;
+function scormlite_delete_attempts($scoid, $userids, $course, $cm, $activity) {
+	global $DB, $CFG;
+	require_once($CFG->dirroot . '/mod/scormlite/locallib.php');
+	
     foreach ($userids as $userid) {
-        $DB->delete_records('scormlite_scoes_track', array('scoid'=>$scoid, 'userid'=>$userid));
+		$DB->delete_records('scormlite_scoes_track', array('scoid'=>$scoid, 'userid'=>$userid));
+		$sco = $DB->get_record('scormlite_scoes', ['id' => $scoid]);
+		scormlite_trigger_sco_event('sco_result_reset', $course, $cm, $activity, $sco, $userid);
 	}
 }
 

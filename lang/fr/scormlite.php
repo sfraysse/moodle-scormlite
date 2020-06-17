@@ -54,7 +54,7 @@ $string['code_help'] = 'Le code est utilisé comme un nom court pour identifier 
 $string['package'] = 'Package';
 $string['package_help'] = 'Le package est un fichier zip qui contient un contenu SCORM Lite (SCORM 2004 mono-SCO).';
 // Availability
-$string['timerestrict'] = 'Limiter les réponses à cette période';
+$string['timerestrict'] = "Période d'accès";
 $string['manualopen'] = 'Disponibilité';
 $string['manualopendesc'] = 'Ce paramètre permet de forcer l\'ouverture ou la fermeture de l\'activité, sans tenir compte des dates d\'ouverture et de fermeture.';
 $string['manualopendates'] = 'Utiliser les dates';
@@ -81,6 +81,8 @@ $string['displayclosebuttondesc'] = 'Affiche un bouton "fermer" en haut à gauch
 $string['displaychrono'] = 'Afficher le chronomètre';
 $string['displaychronodesc'] = 'Afficher un chronomètre dans le contenu. Le contenu importé doit avoir été conçu pour supporter ce paramètre.';
 $string['displaychrono_help'] = $string['displaychronodesc'];
+$string['safeexam'] = 'Utiliser Safe Exam Browser';
+$string['safeexam_warning'] = "Cette activité nécessite l'utilisation de Safe Exam Browser !";
 // Attempts
 $string['maximumattempts'] = 'Nombre de tentatives';
 $string['maximumattempts_help'] = 'Ce paramètre permet de limiter le nombre de tentatives.';
@@ -156,6 +158,7 @@ $string['restart'] = 'Recommencer';
 $string['resume'] = 'Reprendre';
 // Content
 $string['activityloading'] = 'Vous allez être automatiquement redirigé vers l\'activité...';
+$string['activityunloading'] = 'Activité en cours de déchargement, merci de patienter...';
 $string['activitypleasewait'] = 'Activité en cours de chargement, merci de patienter...';
 $string['popupmessage'] = "Le contenu doit s'ouvrir dans une nouvelle fenêtre. 
 Si ce n'est pas le cas, merci de vérifier les paramètres de blocage des fenêtres de votre navigateur. 
@@ -163,6 +166,9 @@ Merci de ne pas naviguer depuis cette page tant que la fenêtre du contenu est o
 ";
 $string['recovery'] = 'La dernière session de ce contenu s\'est finie anormalement et va être restaurée.';
 $string['notallowed'] = 'Vous n\'êtes pas autorisé à faire cela !';
+$string['notallowed_review'] = "Vous n'êtes pas autorisé à voir la correction maintenant !";
+$string['notallowed_reviewother'] = "Vous n'êtes pas autorisé à voir la correction des autres !";
+$string['notallowed_maxattempt'] = "Vous avez dépassé le nombre maximum d'essais !";
 $string['accessdenied'] = 'Vous n\'êtes pas autorisé à consulter ce contenu !';
 $string['exitactivity'] = 'Sortir de l\'activité';
 $string['exitcontent'] = 'Sortir du contenu';

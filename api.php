@@ -29,7 +29,7 @@ require_once($CFG->dirroot.'/mod/scormlite/locallib.php');
 // Params
 $id = optional_param('id', '', PARAM_INT);              // Course Module ID
 $scoid = required_param('scoid', PARAM_INT);            // SCO ID
-$userid = optional_param('userid',$USER->id,PARAM_INT);	// User id
+$userid = optional_param('userid', $USER->id, PARAM_INT);	// User id
 $backurl = optional_param('backurl','',PARAM_RAW);	// Back URL
 $attempt = optional_param('attempt', 1, PARAM_INT);     // Attempt
 
@@ -37,6 +37,7 @@ $attempt = optional_param('attempt', 1, PARAM_INT);     // Attempt
 $sco = $DB->get_record("scormlite_scoes", array("id"=>$scoid), '*', MUST_EXIST);
 $activity = scormlite_get_containeractivity($scoid, $sco->containertype);
 $cm = get_coursemodule_from_instance($sco->containertype, $activity->id, 0, false, MUST_EXIST);
+$course = $DB->get_record("course", array("id" => $cm->course), '*', MUST_EXIST);
 
 // Check back URL
 $backurl = str_replace('&amp;', '&', $backurl);
@@ -58,6 +59,7 @@ $PAGE->set_url($url);
 //
 
 require_login($cm->course, false, $cm); // Required for global vars init ($COURSE used to find language)
+
 
 //
 // Print the page
@@ -123,11 +125,28 @@ if ($sco->maxtime != 0) { // 0 means "no max time"
 	$userdata->max_time_allowed = "PT".$sco->maxtime."M";         // Should check if >60 to format hours !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 }
 
+
+//
+// Logs
+//
+
+$sessionid = uuid();	// Never commet this!
+
+$review = $usertrack && ($usertrack->status == "passed" || $usertrack->status == "failed");
+scormlite_trigger_sco_event('attempt_launched', $course, $cm, $activity, $sco, $userid, [
+	'sessionid' => $sessionid,
+	'attempt' => $attempt,
+	'launchmode' => $review ? 'Review' : 'Normal',
+]);
+
+
 // Include the JS local API
 include_once($CFG->dirroot.'/mod/scormlite/datamodels/scorm_13.js.php');
 
 // set the start time of this SCO
 scormlite_insert_track($userid, $scoid, $attempt, 'x.start.time', time());
+
+
 ?>
 
 

@@ -21,12 +21,12 @@
 
 // Includes
 require_once('../../config.php');
-require_once($CFG->dirroot.'/mod/scormlite/locallib.php'); 
+require_once($CFG->dirroot . '/mod/scormlite/locallib.php'); 
 
 // Params
 $id    = optional_param('id', '', PARAM_INT);           // Course Module id, or
 $scoid = required_param('scoid', PARAM_INT);            // SCO id
-$userid = optional_param('userid',$USER->id,PARAM_INT);	// User id
+$userid = optional_param('userid', $USER->id, PARAM_INT);	// User id
 $backurl = optional_param('backurl','',PARAM_LOCALURL);	// Back URL
 $attempt = optional_param('attempt', 1, PARAM_INT);     // Attempt
 
@@ -110,20 +110,18 @@ $LMS_api = 'API_1484_11';
             if (myGetAPIHandle() != null) {
                 location.href = "<?php echo $result ?>";
             } else {
-				// SF2017 - Remove pix_url
-                //document.body.innerHTML = "<p><?php echo get_string('activityloading', 'scormlite');?> <span id='countdown'><?php echo $delayseconds ?></span> <?php echo get_string('numseconds', 'moodle', '');?>. &nbsp; <img src='<?php echo $OUTPUT->pix_url('wait', 'scormlite') ?>'><p>";
                 document.body.innerHTML = "<p><?php echo get_string('activityloading', 'scormlite');?> <span id='countdown'><?php echo $delayseconds ?></span> <?php echo get_string('numseconds', 'moodle', '');?>.<p>";
                 var e = document.getElementById("countdown");
                 var cSeconds = parseInt(e.innerHTML);
                 var timer = setInterval(function() {
-                                                if( cSeconds && myGetAPIHandle() == null ) {
-                                                    e.innerHTML = --cSeconds;
-                                                } else {
-                                                    clearInterval(timer);
-                                                    document.body.innerHTML = "<p><?php echo get_string('activitypleasewait', 'scormlite');?></p>";
-                                                    location = "<?php echo $result ?>";
-                                                }
-                                            }, 1000);
+                    if( cSeconds && myGetAPIHandle() == null ) {
+                        e.innerHTML = --cSeconds;
+                    } else {
+                        clearInterval(timer);
+                        document.body.innerHTML = "<p><?php echo get_string('activitypleasewait', 'scormlite');?></p>";
+                        location = "<?php echo $result ?>";
+                    }
+                }, 1000);
             }
         }
         //]]>

@@ -14,26 +14,35 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace mod_scormlite\event;
+/**
+ * Verbs vocab.
+ *
+ * @package    mod_scormlite
+ * @copyright  2019 Sébastien Fraysse {@link http://fraysse.eu}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+namespace mod_scormlite\xapi\vocab;
 
 defined('MOODLE_INTERNAL') || die();
 
-class course_module_viewed extends \core\event\course_module_viewed {
+use logstore_trax\src\vocab\verbs as native_verbs;
+
+/**
+ * Verbs vocab.
+ *
+ * @package    mod_scormlite
+ * @copyright  2019 Sébastien Fraysse {@link http://fraysse.eu}
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+class verbs extends native_verbs {
 
     /**
-     * Init method.
+     * Vocab items.
+     *
+     * @var array $items
      */
-    protected function init() {
-        $this->data['objecttable'] = 'scormlite';
-        $this->data['crud'] = 'r';
-        $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
-    }
+    protected $items = [
+    ];
 
-    /**
-     * Get object ID mapping.
-     */
-    public static function get_objectid_mapping() {
-        return array('db' => 'scormlite', 'restore' => 'scormlite');
-    }
 }
-

@@ -90,30 +90,9 @@ class mod_scormlite_mod_form extends moodleform_mod {
 
 		$mform->addElement('header', 'advanced', get_string('othersettings', 'form'));
 
-		// Maximum time
-		$mform->addElement('text', 'maxtime', get_string('maxtime','scormlite'), 'maxlength="5" size="5"');
-		$mform->setDefault('maxtime', $config->maxtime);
-		$mform->setType('maxtime', PARAM_INT);
-		$mform->addHelpButton('maxtime', 'maxtime', 'scormlite');
-		$mform->addRule('maxtime', null, 'numeric', null, 'client');
-		$mform->addRule('maxtime', null, 'nopunctuation', null, 'client');
-
-		// Passing score
-		$mform->addElement('text', 'passingscore', get_string('passingscore','scormlite'), 'maxlength="2" size="2"');
-		$mform->setDefault('passingscore', $config->passingscore);
-		$mform->setType('passingscore', PARAM_INT);
-		$mform->addHelpButton('passingscore', 'passingscore', 'scormlite');
-		$mform->addRule('passingscore', null, 'numeric', null, 'client');
-		$mform->addRule('passingscore', null, 'nopunctuation', null, 'client');
-
 		// Framed / Popup Window
 		$mform->addElement('select', 'popup', get_string('display', 'scormlite'), scormlite_get_popup_display_array());
 		$mform->setDefault('popup', $config->popup);
-
-		// Chrono
-		$mform->addElement('selectyesno', 'displaychrono', get_string('displaychrono', 'scormlite'));
-		$mform->setDefault('displaychrono', $config->displaychrono);
-		$mform->addHelpButton('displaychrono', 'displaychrono', 'scormlite');
 
         // Max Attempts
         $mform->addElement('select', 'maxattempt', get_string('maximumattempts', 'scormlite'), scormlite_get_attempts_array());
@@ -132,16 +111,47 @@ class mod_scormlite_mod_form extends moodleform_mod {
 		$mform->setDefault('lock_attempts_after_success', $config->lock_attempts_after_success);
 		$mform->addHelpButton('lock_attempts_after_success', 'lock_attempts_after_success', 'scormlite');
 
+		// Passing score
+		$mform->addElement('text', 'passingscore', get_string('passingscore','scormlite'), 'maxlength="2" size="2"');
+		$mform->setDefault('passingscore', $config->passingscore);
+		$mform->setType('passingscore', PARAM_INT);
+		$mform->addHelpButton('passingscore', 'passingscore', 'scormlite');
+		$mform->addRule('passingscore', null, 'numeric', null, 'client');
+		$mform->addRule('passingscore', null, 'nopunctuation', null, 'client');
+        $mform->setAdvanced('passingscore', 1);
+
+		// Maximum time
+		$mform->addElement('text', 'maxtime', get_string('maxtime','scormlite'), 'maxlength="5" size="5"');
+		$mform->setDefault('maxtime', $config->maxtime);
+		$mform->setType('maxtime', PARAM_INT);
+		$mform->addHelpButton('maxtime', 'maxtime', 'scormlite');
+		$mform->addRule('maxtime', null, 'numeric', null, 'client');
+		$mform->addRule('maxtime', null, 'nopunctuation', null, 'client');
+        $mform->setAdvanced('maxtime', 1);
+
+		// Chrono
+		$mform->addElement('selectyesno', 'displaychrono', get_string('displaychrono', 'scormlite'));
+		$mform->setDefault('displaychrono', $config->displaychrono);
+		$mform->addHelpButton('displaychrono', 'displaychrono', 'scormlite');
+        $mform->setAdvanced('displaychrono', 1);
+
 		// Reports: review access
 		$mform->addElement('select', 'review_access', get_string('review_access', 'scormlite'), scormlite_get_review_access_array());
 		$mform->addHelpButton('review_access', 'review_access', 'scormlite');
 		$mform->setDefault('review_access', $config->review_access);
+        $mform->setAdvanced('review_access', 1);
 
 		// Reports: Quetzal statistics
 		$mform->addElement('advcheckbox', 'quetzal_statistics', get_string('quetzal_statistics_access', 'scormlite'));
 		$mform->setDefault('quetzal_statistics', $config->quetzal_statistics);
         $mform->addHelpButton('quetzal_statistics', 'quetzal_statistics_access', 'scormlite');
-		
+		$mform->setAdvanced('quetzal_statistics', 1);
+
+		// Security: use safe exam browser
+		$mform->addElement('selectyesno', 'safeexam', get_string('safeexam', 'scormlite'));
+		$mform->setDefault('safeexam', false);
+        $mform->setAdvanced('safeexam', 1);
+
 		
 		//-------------------------------------------------------------------------------
 		// Colors

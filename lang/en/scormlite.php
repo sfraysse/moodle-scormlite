@@ -54,7 +54,7 @@ $string['code_help'] = 'The code is used as a short name to identify the content
 $string['package'] = 'Package file';
 $string['package_help'] = 'The package file is a zip file containing SCORM Lite content (SCORM 2004 mono-SCO).';
 // Availability
-$string['timerestrict'] = 'Restrict answering to this time period';
+$string['timerestrict'] = 'Access period';
 $string['manualopen'] = 'Availability';
 $string['manualopendesc'] = 'This setting allows to force the activity opening or closing, without taking into account the opening and closing dates.';
 $string['manualopendates'] = 'Use the dates';
@@ -81,6 +81,8 @@ $string['displayclosebuttondesc'] = 'Display close button to the top left of the
 $string['displaychrono'] = 'Display chronometer';
 $string['displaychronodesc'] = 'Display a chronomoter inside the content. This setting works only if the imported content has been designed for.';
 $string['displaychrono_help'] = $string['displaychronodesc'];
+$string['safeexam'] = 'Use Safe Exam Browser';
+$string['safeexam_warning'] = "This activity requires Safe Exam Browser!";
 // Attempts
 $string['maximumattempts'] = 'Number of attempts';
 $string['maximumattempts_help'] = 'This setting enables the number of attempts to be restricted.';
@@ -155,6 +157,7 @@ $string['restart'] = 'Restart';
 $string['resume'] = 'Resume';
 // Content
 $string['activityloading'] = 'You will be automatically redirected to the activity in';
+$string['activityunloading'] = 'Activity unloading, please wait ...';
 $string['activitypleasewait'] = 'Activity loading, please wait ...';
 $string['popupmessage'] = "Your content should have been opened in a new window. If not, you should check your browser settings to enable popup windows, before starting again.
 Please, don't navigate in this window before closing the content window.
@@ -162,6 +165,9 @@ Please, don't navigate in this window before closing the content window.
 
 $string['recovery'] = 'The previous session of this content has abnormally stopped and will be restored.';
 $string['notallowed'] = 'You are not allowed to do this!';
+$string['notallowed_review'] = 'You are not allowed to review this content now!';
+$string['notallowed_reviewother'] = 'You are not allowed to review content from others!';
+$string['notallowed_maxattempt'] = 'You reached the maximum number of attempts!';
 $string['accessdenied'] = 'You are not allowed to access this content!';
 $string['exitactivity'] = 'Exit activity';
 $string['exitcontent'] = 'Exit content';
@@ -176,7 +182,7 @@ $string['action'] = 'Action';
 $string['groupaverage'] = 'Average score for all students of the group';
 $string['noreportdata'] = 'There is no data to report.';
 
-$string['nogroupingdata'] = 'There is no group in this course.';
+$string['nogroupingdata'] = 'There is no group for this report.';
 $string['nousergroupingdata'] = 'There is no group assigned to this user: {$a}.';
 $string['noactivitygrouping'] = 'There is no group assigned to this activity.';
 $string['selectgrouping'] = 'Please, select a group to display this report.';
@@ -285,3 +291,13 @@ $string['privacy:metadata:scoes_track:element'] = 'The name of the element to be
 $string['privacy:metadata:scoes_track:value'] = 'The value of the given element';
 $string['privacy:metadata:timemodified'] = 'The time when the tracked element was last modified';
 
+// Events
+$string['event:attempt_launched'] = 'SCORM attempt launched';
+$string['event:attempt_initialized'] = 'SCORM attempt initialized';
+$string['event:attempt_completed'] = 'SCORM attempt completed';
+$string['event:attempt_passed'] = 'SCORM attempt passed';
+$string['event:attempt_failed'] = 'SCORM attempt failed';
+$string['event:attempt_terminated'] = 'SCORM attempt terminated';
+$string['event:sco_result_updated'] = 'SCORM result updated';
+$string['event:sco_result_forced'] = 'SCORM result forced';
+$string['event:sco_result_reset'] = 'SCORM result reset';

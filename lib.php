@@ -45,7 +45,7 @@ function scormlite_supports($feature) {
 		case FEATURE_COMPLETION_TRACKS_VIEWS:	return true; // True if module has code to track whether somebody viewed it
 		case FEATURE_COMPLETION_HAS_RULES:		return false; // True if module has custom completion rules
 		case FEATURE_MODEDIT_DEFAULT_COMPLETION:return false; // True if module has default completion
-		case FEATURE_GRADE_HAS_GRADE:			return true; // True if module can provide a grade
+		case FEATURE_GRADE_HAS_GRADE:			return false; // True if module can provide a grade
 		// Next ones should be checked
 		case FEATURE_GRADE_OUTCOMES:			return false; // True if module supports outcomes
 		case FEATURE_ADVANCED_GRADING:			return false; // True if module supports advanced grading methods
@@ -175,48 +175,6 @@ function scormlite_delete_instance($id) {
     
 	return true;
 }
-
-/**
- * Register the ability to handle drag and drop file uploads
- * @return array containing details of the files / types the mod can handle
- */
-/*
-function scormlite_dndupload_register() {
-    return array('files' => array(
-        array('extension' => 'zip', 'message' => get_string('dnduploadscormlite', 'scormlite'))
-    ));
-}
-*/
-
-/**
- * Handle a file that has been uploaded
- * @param object $uploadinfo details of the file / content that has been uploaded
- * @return int instance id of the newly created mod
- */
-/*
-function scormlite_dndupload_handle($uploadinfo) {
-
-    $context = context_module::instance($uploadinfo->coursemodule);
-    file_save_draft_area_files($uploadinfo->draftitemid, $context->id, 'mod_scormlite', 'package', 0);
-    $fs = get_file_storage();
-    $files = $fs->get_area_files($context->id, 'mod_scormlite', 'package', 0, 'sortorder, itemid, filepath, filename', false);
-    $file = reset($files);
-
-    // Create a default scorm object to pass to scorm_add_instance()!
-    $data = get_config('scormlite');
-    $data->course = $uploadinfo->course->id;
-    $data->coursemodule = $uploadinfo->coursemodule;
-    $data->cmidnumber = '';
-    $data->name = $uploadinfo->displayname;
-    $data->scormtype = SCORM_TYPE_LOCAL;
-    $data->reference = $file->get_filename();
-    $data->intro = '';
-    $data->width = $data->framewidth;
-    $data->height = $data->frameheight;
-
-    return scormlite_add_instance($data, null);
-}
-*/
 
 /**
  * Returns a small object with summary information about what a
@@ -463,7 +421,7 @@ function scormlite_get_file_areas($course, $cm, $context) {
 /**
  * File browsing support for SCORM file areas
  *
- * @param stdclass $browser
+ * @param file_browser $browser
  * @param stdclass $areas
  * @param stdclass $course
  * @param stdclass $cm
@@ -509,56 +467,6 @@ function scormlite_get_file_info($browser, $areas, $course, $cm, $context, $file
 	}
 	return $file_info;
 }
-/*
-function scormlite_get_file_info($browser, $areas, $course, $cm, $context, $filearea, $itemid, $filepath, $filename) {
-    global $CFG;
-
-    if (!has_capability('moodle/course:managefiles', $context)) {
-        return null;
-    }
-
-    // no writing for now!
-
-    $fs = get_file_storage();
-
-    if ($filearea === 'content') {
-
-        $filepath = is_null($filepath) ? '/' : $filepath;
-        $filename = is_null($filename) ? '.' : $filename;
-
-        $urlbase = $CFG->wwwroot.'/pluginfile.php';
-        if (!$storedfile = $fs->get_file($context->id, 'mod_scormlite', 'content', 0, $filepath, $filename)) {
-            if ($filepath === '/' and $filename === '.') {
-                $storedfile = new virtual_root_file($context->id, 'mod_scormlite', 'content', 0);
-            } else {
-                // not found
-                return null;
-            }
-        }
-        require_once("$CFG->dirroot/mod/scormlite/locallib.php");
-        return new scormlite_package_file_info($browser, $context, $storedfile, $urlbase, $areas[$filearea], true, true, false, false);
-
-    } else if ($filearea === 'package') {
-        $filepath = is_null($filepath) ? '/' : $filepath;
-        $filename = is_null($filename) ? '.' : $filename;
-
-        $urlbase = $CFG->wwwroot.'/pluginfile.php';
-        if (!$storedfile = $fs->get_file($context->id, 'mod_scormlite', 'package', 0, $filepath, $filename)) {
-            if ($filepath === '/' and $filename === '.') {
-                $storedfile = new virtual_root_file($context->id, 'mod_scormlite', 'package', 0);
-            } else {
-                // not found
-                return null;
-            }
-        }
-        return new file_info_stored($browser, $context, $storedfile, $urlbase, $areas[$filearea], false, true, false, false);
-    }
-
-    // scorm_intro handled in file_browser
-
-    return false;
-}
-*/
 
 /**
  * Serves the files from the scormlite file areas
@@ -576,45 +484,6 @@ function scormlite_pluginfile($course, $cm, $context, $filearea, $args, $forcedo
 	require_once($CFG->dirroot.'/mod/scormlite/sharedlib.php');
 	return scormlite_shared_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, $options, 'scormlite');
 }
-/*
-function scormlite_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload) {
-    global $CFG;
-
-    if ($context->contextlevel != CONTEXT_MODULE) {
-        return false;
-    }
-
-    require_login($course, true, $cm);
-
-    $lifetime = isset($CFG->filelifetime) ? $CFG->filelifetime : 86400;
-
-    if ($filearea === 'content') {
-        $revision = (int)array_shift($args); // prevents caching problems - ignored here
-        $relativepath = implode('/', $args);
-        $fullpath = "/$context->id/mod_scormlite/content/0/$relativepath";
-        // TODO: add any other access restrictions here if needed!
-
-    } else if ($filearea === 'package') {
-        if (!has_capability('moodle/course:manageactivities', $context)) {
-            return false;
-        }
-        $relativepath = implode('/', $args);
-        $fullpath = "/$context->id/mod_scormlite/package/0/$relativepath";
-        $lifetime = 0; // no caching here
-
-    } else {
-        return false;
-    }
-
-    $fs = get_file_storage();
-    if (!$file = $fs->get_file_by_hash(sha1($fullpath)) or $file->is_directory()) {
-        return false;
-    }
-
-    // finally send the file
-    send_stored_file($file, $lifetime, 0, false);
-}
-*/
 
 ////////////////////////////////////////////////////////////////////////////////
 // Navigation API                                                             //

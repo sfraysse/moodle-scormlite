@@ -52,22 +52,6 @@ class scormlite_content_file_info extends file_info_stored {
 		return $empty;
 	}
 }
-/*
-class scormlite_package_file_info extends file_info_stored {
-    public function get_parent() {
-        if ($this->lf->get_filepath() === '/' and $this->lf->get_filename() === '.') {
-            return $this->browser->get_file_info($this->context);
-        }
-        return parent::get_parent();
-    }
-    public function get_visible_name() {
-        if ($this->lf->get_filepath() === '/' and $this->lf->get_filename() === '.') {
-            return $this->topvisiblename;
-        }
-        return parent::get_visible_name();
-    }
-}
-*/
 
 // Parse SCO package
 
@@ -142,59 +126,57 @@ function scormlite_get_launchfile_from_manifest($file) {
 
 // Check permissions to display SCO
 
-function scormlite_check_player_permissions($cm, $sco, $userid, $attempt=1, $backhtml = '', $header = false, $activity = null, $course = null) {
-	global $USER, $CFG, $OUTPUT;
-	require_login($cm->course, false, $cm);
-	$allowed = true;
-	// Check activity visibility
-	if (!$cm->visible and !has_capability('moodle/course:viewhiddenactivities', context_course::instance($cm->course))) {  // KD2014 - 2.6 compliance
-		$allowed = false;
-		print_error('activityiscurrentlyhidden');
-	}
-	// Check user
-	if ($USER->id != $userid) {
-		if (!has_capability('mod/scormlite:reviewothercontent', context_module::instance($cm->id))) {  // KD2014 - 2.6 compliance
-			$allowed = false;
-			print_error('notallowed', 'scormlite');
-		}
-	}
-	// Review mode
-	require_once($CFG->dirroot.'/mod/scormlite/report/reportlib.php');
-	$reviewmode = false;
-	$achieved = false;
-	if ($trackdata = scormlite_get_tracks($sco->id, $userid, $attempt)) {
-		$achieved = ($trackdata->status == 'passed' || $trackdata->status == 'failed');
-		// NNX2017 - Don't decide here the rules to be in review mode
-		$reviewmode = true;  //$achieved && ($sco->manualopen == 2 || ($sco->manualopen == 0 && time() > $sco->timeclose));
-	}
-	// Disable access to content by another user if content is not in review mode
-	if (!$reviewmode && $userid != $USER->id) {
-		$allowed = false;
-		print_error('notallowed', 'scormlite');
-	}
-	// Disable access if acheived but not review
-	if (!$reviewmode && $achieved) {
-		$allowed = false;
-		scormlite_print_error(get_string('accessdenied', 'scormlite'), $backhtml, $header, $cm, $activity, $course);
-	}
-    // Check attempt
-
-    // SF2018 - Illimited attempts except for students
-    $illimitedAccess = has_capability('mod/scormlite:viewotherreport', context_module::instance($cm->id));
-	$attemptmax = $sco->maxattempt;
-    if ($attemptmax != 0 && $attempt > $attemptmax && !$illimitedAccess) {
-		
-		$allowed = false;
-		print_error('notallowed', 'scormlite');
+function scormlite_check_player_permissions($cm, $sco, $userid, $attempt = 1, $backhtml = '', $header = false, $activity = null, $course = null) {
+    global $USER, $CFG;
+    require_login($cm->course, false, $cm);
+    
+    // Invisible activity not allowed without a specific capability.
+    if (!$cm->visible and !has_capability('moodle/course:viewhiddenactivities', context_course::instance($cm->course))) {
+        print_error('activityiscurrentlyhidden');
     }
-            
-	// Check if scorm closed, and print a message if closed
-	list($html, $scormopen) = scormlite_get_availability($cm, $sco, $trackdata); 
-	if (!$scormopen && !$reviewmode && !$illimitedAccess) {
-		echo $html;
-		die;
-	}
-	return $allowed;
+    
+    // Determine if the activity is achieved and if we are in review mode.
+    require_once($CFG->dirroot.'/mod/scormlite/report/reportlib.php');
+    $achieved = false;
+    $reviewmode = false;
+    $superReviewmode = false;
+    if ($trackdata = scormlite_get_tracks($sco->id, $userid, $attempt)) {
+        $achieved = ($trackdata->status == 'passed' || $trackdata->status == 'failed');
+        $reviewmode = $achieved && scormlite_has_review_access($sco, $trackdata);
+        $superReviewmode = $achieved && has_capability('mod/scormlite:reviewothercontent', context_module::instance($cm->id));
+    }
+
+    // Review not allowed.
+    if ($achieved && !$reviewmode && !$superReviewmode) {
+        scormlite_print_error(get_string('notallowed_review', 'scormlite'), $backhtml, $header, $cm, $activity, $course);
+    }
+
+    // Review other not allowed.
+    if ($userid != $USER->id && !$superReviewmode) {
+        print_error('notallowed_reviewother', 'scormlite');
+    }
+
+    $superAccess = has_capability('mod/scormlite:viewotherreport', context_module::instance($cm->id));
+
+    // Check if we reached the max attempt.
+    if ($sco->maxattempt != 0 && $attempt > $sco->maxattempt && !$superAccess) {
+        print_error('notallowed_maxattempt', 'scormlite');
+    }
+        
+    // Check if SCORM access has been closed.
+    list($html, $scormopen) = scormlite_get_availability($cm, $sco, $trackdata); 
+    if (!$scormopen && !$reviewmode && !$superReviewmode && !$superAccess) {
+        echo $html;
+        die;
+    }
+
+    // Safe Exam except for review.
+    require_once($CFG->dirroot.'/mod/scormlite/safeexam.php');
+    if (!scormlite_safeexam_check($sco) && !$reviewmode && !$superReviewmode) {
+        print_error('safeexam_warning', 'scormlite');
+    }
+
+    return true;
 }
 
 // Print error function (not the Moodle error format)
@@ -223,7 +205,6 @@ function scormlite_print_error($msg, $backhtml = '', $header = false, $cm = null
 
 // Insert track for a SCO
 
-// SF2018 - Signature change
 function scormlite_insert_track($userid, $scoid, $attempt, $element, $value, $containertype = 'scormlite') {
     global $DB, $CFG;
     $id = null;
@@ -254,7 +235,6 @@ function scormlite_insert_track($userid, $scoid, $attempt, $element, $value, $co
     return $id;
 }
 
-// SF2018 - Record tracks hook
 // Record track
 
 function scormlite_record_track_hooker($track, $containertype = 'scormlite') {
@@ -294,6 +274,7 @@ function scormlite_check_grades($userid, $activity, $cm, $course, $containertype
         call_user_func_array($function, $args);
 	}
 }
+
 
 //
 // Container data
@@ -352,7 +333,78 @@ function scormlite_parse_quetzal($sco, $cmid, $update = false) {
     // Update DB
     foreach ($questions as $question) {
         $DB->insert_record('scormlite_quetzal_questions', $question);
-    }
+	}
 }
+
+
+//
+// Events
+//
+
+function scormlite_trigger_scormlite_event($eventname, $course, $cm, $activity, $other = []) {
+	$data = [
+		'objectid' => $activity->id,
+		'context' => context_module::instance($cm->id),
+	];
+	if (!empty($other)) {
+		$data['other'] = $other;
+	}
+	$eventclass = '\mod_scormlite\event\\' . $eventname;
+	$event = $eventclass::create($data);
+	$event->add_record_snapshot('course', $course);
+	$event->add_record_snapshot('scormlite', $activity);
+	$event->add_record_snapshot('course_modules', $cm);
+	$event->trigger();
+}
+
+function scormlite_trigger_sco_event($eventname, $course, $cm, $activity, $sco, $userid, $other = []) {
+	$data = [
+		'objectid' => $sco->id,
+		'context' => context_module::instance($cm->id),
+		'relateduserid' => $userid,
+	];
+	if (!empty($other)) {
+		$data['other'] = $other;
+	}
+	$eventclass = '\mod_' . $sco->containertype . '\event\\' . $eventname;
+	if (!class_exists($eventclass)) return;
+	$event = $eventclass::create($data);
+	$event->add_record_snapshot('course', $course);
+	$event->add_record_snapshot($sco->containertype, $activity);
+	$event->add_record_snapshot('course_modules', $cm);
+	$event->trigger();
+}
+
+function uuid() {
+	$randomstring = openssl_random_pseudo_bytes(16);
+	$timelow = bin2hex(substr($randomstring, 0, 4));
+	$timemid = bin2hex(substr($randomstring, 4, 2));
+	$timehiandversion = bin2hex(substr($randomstring, 6, 2));
+	$clockseqhiandreserved = bin2hex(substr($randomstring, 8, 2));
+	$node = bin2hex(substr($randomstring, 10, 6));
+
+	// Set the four most significant bits (bits 12 through 15) of the
+	// timehiandversion field to the 4-bit version number from
+	// Section 4.1.3.
+	$timehiandversion = hexdec($timehiandversion);
+	$timehiandversion = $timehiandversion >> 4;
+	$timehiandversion = $timehiandversion | 0x4000;
+
+	// Set the two most significant bits (bits 6 and 7) of the
+	// clockseqhiandreserved to zero and one, respectively.
+	$clockseqhiandreserved = hexdec($clockseqhiandreserved);
+	$clockseqhiandreserved = $clockseqhiandreserved >> 2;
+	$clockseqhiandreserved = $clockseqhiandreserved | 0x8000;
+
+	return sprintf(
+		'%08s-%04s-%04x-%04x-%012s',
+		$timelow,
+		$timemid,
+		$timehiandversion,
+		$clockseqhiandreserved,
+		$node
+	);
+}
+
 
 

@@ -54,9 +54,10 @@ function scormlite_is_activity_completed($userid, $activity) {
 function scormlite_get_grade($userid, $activity) {
 	global $CFG;
 	require_once($CFG->dirroot.'/mod/scormlite/report/reportlib.php');
-	$tracks = scormlite_get_tracks($activity->scoid, $userid);
-	if ($tracks->success_status == "passed" || $tracks->success_status == "failed" || $tracks->completion_status == "completed") {
-		return $tracks->score_raw;
+	if ($tracks = scormlite_get_tracks($activity->scoid, $userid)) {
+		if ($tracks->success_status == "passed" || $tracks->success_status == "failed" || $tracks->completion_status == "completed") {
+			return $tracks->score_raw;
+		}
 	}
 }
 
@@ -68,11 +69,12 @@ function scormlite_get_grades($activity) {
     $grades = array();
     if ($usertracks = scormlite_get_tracks($activity->scoid)) {
         foreach ($usertracks as $userid => $tracks) {
-			if ($tracks->success_status == "passed" || $tracks->success_status == "failed" || $tracks->completion_status == "completed") {
+			if ($tracks->success_status == "passed" || $tracks->success_status == "failed") {  // || $tracks->completion_status == "completed") {
 	            $grades[$userid] = $tracks->score_raw;
 			}
         }
     }
 	return $grades;
 }
+
 

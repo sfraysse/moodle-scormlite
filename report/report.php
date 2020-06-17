@@ -59,7 +59,7 @@ if ($action == 'save' && $scoclosed) {
 		}			
 	}
 	if (!empty($users)) {
-		scormlite_delete_attempts($sco->id, $users);
+		scormlite_delete_attempts($sco->id, $users, $course, $cm, $activity);
 	}
 }
 
