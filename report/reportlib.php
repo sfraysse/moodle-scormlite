@@ -924,9 +924,9 @@ function scormlite_report_populate_quetzal_stats($tracks, &$questions) {
 
 	// Add percents
 	foreach ($questions as $id => &$question) {
-		$question->stats->noanswer->percent = intval($question->stats->noanswer->count * 100.0 / $count);
-		$question->stats->correct->percent = intval($question->stats->correct->count * 100.0 / $count);
-		$question->stats->incorrect->percent = intval($question->stats->incorrect->count * 100.0 / $count);
+		$question->stats->noanswer->percent = $count ? intval($question->stats->noanswer->count * 100.0 / $count) : 0;
+		$question->stats->correct->percent = $count ? intval($question->stats->correct->count * 100.0 / $count) : 0;
+		$question->stats->incorrect->percent = $count ? intval($question->stats->incorrect->count * 100.0 / $count) : 0;
 	}
 }
 
@@ -934,6 +934,7 @@ function scormlite_report_populate_quetzal_stats($tracks, &$questions) {
 
 function scormlite_report_get_quetzal_answer($suspend) {
 	$suspend = '{'.str_replace("\t", '"', $suspend).'}';
+	$suspend = str_replace("\\x27", '\'', $suspend);
 	$json = json_decode($suspend);
 	if (!$json) return false;
 	if (!isset($json->assmnt)) return false;
