@@ -74,7 +74,7 @@ UPGRADE
 - Quetzal statistics - OK
 
 ## Safe Exam
-- Moodle 3.9 changes !!!!!!!!!!!!!!!!!!!
+- Theme Boost / No popup - OK
 
 ## Data privacy
 - Check Admin > Users > Privacy and policies > Plugin privacy registry - OK
