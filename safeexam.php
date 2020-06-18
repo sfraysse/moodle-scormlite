@@ -24,10 +24,6 @@ defined('MOODLE_INTERNAL') || die();
 function scormlite_safeexam_required($scormlite) {
     global $CFG;
 
-    if (empty($CFG->enablesafebrowserintegration)) {
-        return false;
-    }
-
     if (!isset($scormlite->safeexam)) {
         return false;
     }
