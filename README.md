@@ -3,11 +3,12 @@
 
 # Versions
 
-Vous êtes sur la page de la **version 3.5.7** du plugin ScormLite, dernière version compatible avec **Moodle 3.5**.
+Vous êtes sur la page de la **version 3.5.8** du plugin ScormLite, dernière version compatible avec **Moodle 3.5**.
 
 Ce plugin existe aussi pour :
 - **Moodle 3.4** : [ScormLite 3.4](https://github.com/sfraysse/moodle-scormlite/tree/3.4)
-- **Moodle 3.6** : [ScormLite 3.6](https://github.com/sfraysse/moodle-scormlite/tree/3.6)
+- **Moodle 3.6 à 3.8** : [ScormLite 3.6](https://github.com/sfraysse/moodle-scormlite/tree/3.6)
+- **Moodle 3.9** : [ScormLite 3.9](https://github.com/sfraysse/moodle-scormlite)
 
 
 # Installation
@@ -20,7 +21,7 @@ Ce plugin existe aussi pour :
 
 ## Procédure d'installation
 
-- Télécharger la dernière version du plugin : https://github.com/sfraysse/moodle-scormlite/archive/v3.5.7.zip.
+- Télécharger la dernière version du plugin : https://github.com/sfraysse/moodle-scormlite/archive/v3.5.8.zip.
 - Dans `Moodle > Administration > Plugins > Install plugins`, importer le fichier ZIP du plugin.
 - Suivre la procédure d'installation.
 
