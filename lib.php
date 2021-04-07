@@ -249,9 +249,11 @@ function scormlite_print_recent_mod_activity($activity, $courseid, $detail, $mod
  * @return boolean
  * @todo Finish documenting this function
  **/
+/*
 function scormlite_cron () {
     return true;
 }
+*/
 
 /**
  * Returns an array of users who are participanting in this scormlite
