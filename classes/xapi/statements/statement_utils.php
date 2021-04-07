@@ -126,8 +126,10 @@ trait statement_utils {
                         break;
 
                     case 'maxattempts':
-                        $context['extensions']['http://vocab.xapi.fr/extensions/max-attempts']
-                            = $this->eventother->maxattempts;
+                        if (isset($this->eventother->maxattempts)) {
+                            $context['extensions']['http://vocab.xapi.fr/extensions/max-attempts']
+                                = $this->eventother->maxattempts;
+                        }
                         break;
 
                     case 'attemptsnumber':
