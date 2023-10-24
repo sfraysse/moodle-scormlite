@@ -242,7 +242,7 @@ function scormlite_print_groupings_selectform($courseid, $groupings, $groupingid
 			<input name="id" type="hidden" value="'.$cmid.'" />
 			<input name="stepid" type="hidden" value="'.$stepid.'" />
 			<input name="userid" type="hidden" value="'.$userid.'" />
-			<input id="submit_grouping" class="btn btn-default" type="submit" />
+			<input id="submit_grouping" class="btn btn-secondary" type="submit" />
 		</form>
 		<script>document.getElementById("submit_grouping").style.display="none"</script>';
 	echo $select_grouping_html;
@@ -272,7 +272,8 @@ function scormlite_get_myprofile($cm) {
 		$html = '';
 		global $DB, $OUTPUT, $CFG, $USER;
 		$userid = $USER->id;
-		$userdata = $DB->get_record('user', array('id'=>$userid), user_picture::fields());
+
+		$userdata = $DB->get_record('user', array('id'=>$userid), implode(',', \core_user\fields::get_picture_fields()));
 		$html .= '<div class="myprofile">'."\n";
 		$html .= $OUTPUT->user_picture($userdata, array('courseid'=>$cm->course));
 		$html .= "<a href=\"$CFG->wwwroot/user/view.php?id=$userid&amp;course=$cm->course\">".
@@ -606,11 +607,11 @@ function scormlite_print_exportbuttons($formats, $class = 'mdl-align exportcomma
 	foreach($formats as $format=>$url) {
 		if ($format == 'html' || $format == 'csv' || $format == 'xls') {
 			$exporturl = new moodle_url($url, array('format'=>$format));
-			echo '<input type="button" class="btn btn-default" value="'.get_string('export'.$format, 'scormlite').'" onClick="window.open(\''.$exporturl.'\');"/>';			
+			echo '<input type="button" class="btn btn-secondary" value="'.get_string('export'.$format, 'scormlite').'" onClick="window.open(\''.$exporturl.'\');"/>';			
 			echo '&nbsp;&nbsp;&nbsp;';
   		} else {
 			$exporturl = new moodle_url($url, array('format'=>'xls'));
-			echo '<input type="button" class="btn btn-default" value="'.get_string('exportbook'.$format, 'assessmentpath').'" onClick="window.open(\''.$exporturl.'\');"/>';			
+			echo '<input type="button" class="btn btn-secondary" value="'.get_string('exportbook'.$format, 'assessmentpath').'" onClick="window.open(\''.$exporturl.'\');"/>';			
 			echo '&nbsp;&nbsp;&nbsp;';
 		}
 	}
@@ -1400,7 +1401,10 @@ function scormlite_get_config_colors($plugin_name = "scormlite") {
 	return $colors;
 }
 function scormlite_compare_colors($c1, $c2) {
-	return $c1->lt > $c2->lt;
+	if ($c1->lt == $c2->lt) {
+		return 0;
+	}
+	return ($c1->lt > $c2->lt) ? 1 : -1;
 }
 
 // 

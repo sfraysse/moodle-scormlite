@@ -52,6 +52,7 @@ function scormlite_supports($feature) {
 		case FEATURE_IDNUMBER:					return false; // True if module supports outcomes
 		case FEATURE_COMMENT:					return false; // 
 		case FEATURE_RATE:						return false; //  
+        case FEATURE_MOD_PURPOSE:             	return MOD_PURPOSE_CONTENT;
 		default: return null;
 	}
 } 

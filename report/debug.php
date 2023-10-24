@@ -64,7 +64,7 @@ echo $OUTPUT->header();
 
 // Title and description
 scormlite_print_title($cm, $activity);
-$userdata = $DB->get_record('user', array('id'=>$userid), user_picture::fields());
+$userdata = $DB->get_record('user', array('id'=>$userid), \core_user\fields::get_picture_fields());
 echo '<h2 class="main">'.$OUTPUT->user_picture($userdata, array('courseid'=>$cm->course)).'<br>'.$userdata->firstname.' '.$userdata->lastname.'</h2>';
 echo '<div>&nbsp;</div>';
 

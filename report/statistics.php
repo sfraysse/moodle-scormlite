@@ -66,7 +66,7 @@ scormlite_report_print_quetzal_statistics($sco->id);
 // Buttons
 echo '<div style="margin-top:20px;">';
 $reportLink = new moodle_url('/mod/scormlite/report/report.php', array('id'=>$cmid));
-echo '<a href="'.$reportLink.'" class="btn btn-default" style="margin-left:5px;">'.get_string("quetzal_statistics_back", "scormlite").'</a>';		
+echo '<a href="'.$reportLink.'" class="btn btn-secondary" style="margin-left:5px;">'.get_string("quetzal_statistics_back", "scormlite").'</a>';		
 echo '</div>';
 
 echo '</form>';

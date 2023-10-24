@@ -287,13 +287,13 @@ if (empty($students)) {
 	// Buttons
 	echo '<div style="margin-top:20px;">';
 	if ($scoclosed) {
-		echo '<input type="submit" value="'.get_string("deleteattemps", "scormlite").'" onClick="return confirmSubmit()" class="btn btn-default"/>';
+		echo '<input type="submit" value="'.get_string("deleteattemps", "scormlite").'" onClick="return confirmSubmit()" class="btn btn-secondary"/>';
 	} else {
-		echo '<button type="button" onClick="alert(\''.get_string("deleteattempsno", "scormlite").'\')" class="btn btn-default">'.get_string("deleteattemps", "scormlite").'</button>';		
+		echo '<button type="button" onClick="alert(\''.get_string("deleteattempsno", "scormlite").'\')" class="btn btn-secondary">'.get_string("deleteattemps", "scormlite").'</button>';		
 	}
 	if ($sco->quetzal_statistics == 1) {
 		$statsLink = new moodle_url('/mod/scormlite/report/statistics.php', array('id'=>$cmid));
-		echo '<a href="'.$statsLink.'" class="btn btn-default" style="margin-left:5px;">'.get_string("quetzal_statistics", "scormlite").'</a>';		
+		echo '<a href="'.$statsLink.'" class="btn btn-secondary" style="margin-left:5px;">'.get_string("quetzal_statistics", "scormlite").'</a>';		
 	}
 	echo '</div>';
 	echo '</form>';
