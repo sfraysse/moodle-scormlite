@@ -146,6 +146,7 @@ class table_text_export_format_parent extends table_default_export_format_parent
     protected $mimetype = 'text/tab-separated-values';
     protected $ext = '.txt';
     protected $myexporter;
+    protected $filename;
 
     public function __construct() {
         $this->myexporter = new csv_export_writer($this->seperator, '"', $this->mimetype);

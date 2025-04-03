@@ -5,12 +5,6 @@
 
 Vous êtes sur la page de la **version 4.3.0** du plugin ScormLite, dernière version compatible avec **Moodle 4.3**.
 
-Ce plugin existe aussi pour :
-- **Moodle 3.4** : [ScormLite 3.4](https://github.com/sfraysse/moodle-scormlite/tree/3.4)
-- **Moodle 3.5** : [ScormLite 3.5](https://github.com/sfraysse/moodle-scormlite/tree/3.5)
-- **Moodle 3.6 à 3.8** : [ScormLite 3.6](https://github.com/sfraysse/moodle-scormlite/tree/3.6)
-- **Moodle 3.9** : [ScormLite 3.9](https://github.com/sfraysse/moodle-scormlite/tree/3.9)
-
 
 # Installation
 

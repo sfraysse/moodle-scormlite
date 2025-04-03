@@ -1129,6 +1129,9 @@ class scormlite_table_xls_export_format extends table_excel_export_format {
 
 	private $config_colors;
 	private $item_colors;
+	
+    /** @var int $rownum */
+    protected $rownum = 0;
 
 	public function __construct($plugin_name = "scormlite") {
 		$this->start_document('export');
