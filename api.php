@@ -80,7 +80,7 @@ $attempts = $DB->get_records_sql($select.$from.$sort, $params);
 
 // User data
 if (! $user = $DB->get_record('user', array('id'=>$userid))) {
-	print_error('invaliduser', scormlite);
+	throw new \moodle_exception('invaliduser', 'scormlite');
 }
 $userdata = new stdClass();
 $userdata->student_id = addslashes_js($user->username);

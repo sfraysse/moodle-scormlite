@@ -25,7 +25,7 @@
  * @copyright 1999 onwards Martin Dougiamas  {@link http://moodle.com}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class table_spreadsheet_export_format_parent extends table_default_export_format_parent {
+class table_spreadsheet_export_format_parent extends core_table\base_export_format {
     var $currentrow;
     var $workbook;
     var $worksheet;
@@ -141,11 +141,12 @@ class table_ods_export_format extends table_spreadsheet_export_format_parent {
  * @copyright 1999 onwards Martin Dougiamas  {@link http://moodle.com}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class table_text_export_format_parent extends table_default_export_format_parent {
+class table_text_export_format_parent extends core_table\base_export_format {
     protected $seperator = "tab";
     protected $mimetype = 'text/tab-separated-values';
     protected $ext = '.txt';
     protected $myexporter;
+    protected $filename;
 
     public function __construct() {
         $this->myexporter = new csv_export_writer($this->seperator, '"', $this->mimetype);
@@ -221,7 +222,7 @@ class table_csv_export_format extends table_text_export_format_parent {
  * @copyright 1999 onwards Martin Dougiamas  {@link http://moodle.com}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class table_xhtml_export_format extends table_default_export_format_parent {
+class table_xhtml_export_format extends core_table\base_export_format {
     function start_document($filename) {
         header("Content-Type: application/download\n");
         header("Content-Disposition: attachment; filename=\"$filename.html\"");

@@ -38,7 +38,6 @@ function scormlite_supports($feature) {
 		case FEATURE_BACKUP_MOODLE2:			return true;  // True if module supports backup/restore of moodle2 format
 		case FEATURE_GROUPS:					return false; // True if module supports groups
 		case FEATURE_GROUPINGS:					return false; // True if module supports groupings
-		case FEATURE_GROUPMEMBERSONLY:			return true;  // True if module supports groupmembersonly
 		case FEATURE_SHOW_DESCRIPTION:			return true; // True if module can show description on course main page
 		case FEATURE_NO_VIEW_LINK:				return false; // True if module has no 'view' page (like label)
 		case FEATURE_MOD_INTRO:					return true;  // True if module supports intro editor
@@ -425,15 +424,15 @@ function scormlite_get_file_areas($course, $cm, $context) {
  * File browsing support for SCORM file areas
  *
  * @param file_browser $browser
- * @param stdclass $areas
- * @param stdclass $course
- * @param stdclass $cm
- * @param stdclass $context
+ * @param object $areas
+ * @param object $course
+ * @param object $cm
+ * @param object $context
  * @param string $filearea
  * @param int $itemid
  * @param string $filepath
  * @param string $filename
- * @return stdclass file_info instance or null if not found
+ * @return object file_info instance or null if not found
  */
 function scormlite_get_file_info($browser, $areas, $course, $cm, $context, $filearea, $itemid, $filepath, $filename) {
 	global $CFG;

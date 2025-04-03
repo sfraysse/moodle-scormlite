@@ -1042,7 +1042,7 @@ require_once($CFG->dirroot.'/lib/tablelib.php');
 // NNX2016 - Added to ensure compatibility since these functions are not in the original file anymore (Moodle 3.1)
 require_once($CFG->dirroot.'/mod/scormlite/report/tablelib.php');
 
-class scormlite_table_lms_export_format extends table_default_export_format_parent {
+class scormlite_table_lms_export_format extends core_table\base_export_format {
 
 	private $config_colors;
 
@@ -1129,6 +1129,9 @@ class scormlite_table_xls_export_format extends table_excel_export_format {
 
 	private $config_colors;
 	private $item_colors;
+	
+    /** @var int $rownum */
+    protected $rownum = 0;
 
 	public function __construct($plugin_name = "scormlite") {
 		$this->start_document('export');
