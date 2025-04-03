@@ -47,7 +47,7 @@ $PAGE->set_url($url);
 
 // Check activity visibility 
 if (!$cm->visible and !has_capability('moodle/course:viewhiddenactivities', context_course::instance($cm->course))) {  // KD2014 - 2.6 compliance
-	print_error('activityiscurrentlyhidden');
+	throw new \moodle_exception('activityiscurrentlyhidden');
 }
 
 //

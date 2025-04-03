@@ -132,7 +132,7 @@ function scormlite_check_player_permissions($cm, $sco, $userid, $attempt = 1, $b
     
     // Invisible activity not allowed without a specific capability.
     if (!$cm->visible and !has_capability('moodle/course:viewhiddenactivities', context_course::instance($cm->course))) {
-        print_error('activityiscurrentlyhidden');
+        throw new \moodle_exception('activityiscurrentlyhidden');
     }
     
     // Determine if the activity is achieved and if we are in review mode.
@@ -153,14 +153,14 @@ function scormlite_check_player_permissions($cm, $sco, $userid, $attempt = 1, $b
 
     // Review other not allowed.
     if ($userid != $USER->id && !$superReviewmode) {
-        print_error('notallowed_reviewother', 'scormlite');
+        throw new \moodle_exception('notallowed_reviewother', 'scormlite');
     }
 
     $superAccess = has_capability('mod/scormlite:viewotherreport', context_module::instance($cm->id));
 
     // Check if we reached the max attempt.
     if ($sco->maxattempt != 0 && $attempt > $sco->maxattempt && !$superAccess) {
-        print_error('notallowed_maxattempt', 'scormlite');
+        throw new \moodle_exception('notallowed_maxattempt', 'scormlite');
     }
         
     // Check if SCORM access has been closed.
@@ -173,7 +173,7 @@ function scormlite_check_player_permissions($cm, $sco, $userid, $attempt = 1, $b
     // Safe Exam except for review.
     require_once($CFG->dirroot.'/mod/scormlite/safeexam.php');
     if (!scormlite_safeexam_check($sco) && !$reviewmode && !$superReviewmode) {
-        print_error('safeexam_warning', 'scormlite');
+        throw new \moodle_exception('safeexam_warning', 'scormlite');
     }
 
     return true;
