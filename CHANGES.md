@@ -4,6 +4,9 @@
 
 - `xml_set_object` is deprecated with PHP 8.4. Check the `scorm` mod to find a solution in next Moodle release.
 
+## 4.3.1
+
+- Removed the activity description on the main view.
 
 ## 4.3
 

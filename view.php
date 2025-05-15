@@ -70,7 +70,7 @@ scormlite_print_tabs($cm, $activity, $playurl, $reporturl, 'play');
 
 // Title and description
 scormlite_print_title($cm, $activity);
-scormlite_print_description($cm, $activity);
+//scormlite_print_description($cm, $activity);
 
 // My status box
 $html = '';
