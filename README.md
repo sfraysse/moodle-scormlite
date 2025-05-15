@@ -3,7 +3,7 @@
 
 # Versions
 
-Vous êtes sur la page de la **version 4.3.0** du plugin ScormLite, dernière version compatible avec **Moodle 4.3**.
+Vous êtes sur la page de la **version 4.3.1** du plugin ScormLite, dernière version compatible avec **Moodle 4.3**.
 
 
 # Installation
@@ -16,7 +16,7 @@ Vous êtes sur la page de la **version 4.3.0** du plugin ScormLite, dernière ve
 
 ## Procédure d'installation
 
-- Télécharger la dernière version du plugin : https://github.com/sfraysse/moodle-scormlite/archive/v4.3.0.zip.
+- Télécharger la dernière version du plugin : https://github.com/sfraysse/moodle-scormlite/archive/v4.3.1.zip.
 - Dans `Moodle > Administration > Plugins > Install plugins`, importer le fichier ZIP du plugin.
 - Suivre la procédure d'installation.
 
